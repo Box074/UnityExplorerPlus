@@ -3,8 +3,7 @@ namespace UnityExplorerPlusMod;
 
 class UnityExplorerPlus : ModBase
 {
-    public static int rendererInspectorId = -1;
-    public static RendererInspector rendererInspector = new();
+    public static Dictionary<int, MouseInspectorBase> inspectors = new();
     public override void Initialize()
     {
         if (typeof(UExplorer.UExplorer)
@@ -14,20 +13,26 @@ class UnityExplorerPlus : ModBase
         }
         Init().StartCoroutine();
     }
+    public static void AddInspector(string name, MouseInspectorBase inspector)
+    {
+        int id  = InspectorPanel.Instance.MouseInspectDropdown.options.Count;
+        InspectorPanel.Instance.MouseInspectDropdown.options.Add(new(name));
+        inspectors.Add(id, inspector);
+    }
     private IEnumerator Init()
     {
         while(UnityExplorer.UI.UIManager.Initializing) yield return null;
-        rendererInspectorId = InspectorPanel.Instance.MouseInspectDropdown.options.Count;
-        InspectorPanel.Instance.MouseInspectDropdown.options.Add(new("Renderer Inspector"));
+        AddInspector("Renderer", new RendererInspector());
+        AddInspector("Enemy", new EnemyInspector());
         HookEndpointManager.Add(typeof(InspectUnderMouse).GetMethod("OnDropdownSelect"), PatchOnDropdownSelect);
         HookEndpointManager.Add(typeof(InspectUnderMouse).GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
     }
     public MouseInspectorBase Patch_get_CurrentInspector(Func<InspectUnderMouse, MouseInspectorBase> orig,
         InspectUnderMouse self)
     {
-        if((int)InspectUnderMouse.Mode == rendererInspectorId)
+        if(inspectors.TryGetValue((int)InspectUnderMouse.Mode, out var insp))
         {
-            return rendererInspector;
+            return insp;
         }
         else
         {
@@ -36,10 +41,10 @@ class UnityExplorerPlus : ModBase
     }
     public void PatchOnDropdownSelect(Action<int> orig, int index)
     {
-        if (index == rendererInspectorId)
+        if (inspectors.TryGetValue(index, out var insp))
         {
             InspectorPanel.Instance.MouseInspectDropdown.value = 0;
-            InspectUnderMouse.Instance.StartInspect((MouseInspectMode)rendererInspectorId);
+            InspectUnderMouse.Instance.StartInspect((MouseInspectMode)index);
         }
         else
         {

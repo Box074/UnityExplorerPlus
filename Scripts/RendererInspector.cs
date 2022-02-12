@@ -6,9 +6,9 @@ class RendererInspector : MouseInspectorBase
     public GameObject lastHit = null;
     public Renderer[] rendererCache = null;
     public float cacheTime = 0;
-    public Text objNameLabel => 
+    public static Text objNameLabel => 
         ReflectionHelper.GetField<InspectUnderMouse, Text>(InspectUnderMouse.Instance, "objNameLabel");
-    public Text objPathLabel =>
+    public static Text objPathLabel =>
         ReflectionHelper.GetField<InspectUnderMouse, Text>(InspectUnderMouse.Instance, "objPathLabel");
     public override void OnEndInspect()
     {
