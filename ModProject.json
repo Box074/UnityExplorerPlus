@@ -1,6 +1,6 @@
 {
   "ProjectName": "UnityExplorerPlus",
-  "ModVersion": "0.0.1.0",
+  "ModVersion": "0.0.2.0",
   "CodeDir": ".\\Scripts\\",
   "EmbeddedResourceDir": ".\\EmbeddedResource\\",
   "EmbeddedResource": {},
