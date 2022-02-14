@@ -26,6 +26,14 @@ class ModPanel : CustomPanel , ICellPoolDataSource<ModCell>
         UIFactory.SetLayoutElement(content, null, 25, null, 9999, null, null, null);
         content.GetComponent<VerticalLayoutGroup>().childControlHeight = false;
         //scrollPool.Initialize(this);
+        modCache.Clear();
+        var mods = (IEnumerator)MGetEnumerator.Invoke(FModInstances.GetValue(null, null), null);
+        while (mods.MoveNext())
+        {
+            var mod = (IMod)FMod.GetValue(mods.Current);
+            if (mod == null) continue;
+            modCache.Add(mod);
+        }
         typeof(ScrollPool<ModCell>).GetMethod("Initialize").Invoke(scrollPool, new object[] { this, null });
         Refresh();
     }
@@ -63,5 +71,5 @@ class ModPanel : CustomPanel , ICellPoolDataSource<ModCell>
             cell.Disable();
         }
     }
-    public int ItemCount { get; set; }
+    public int ItemCount => modCache.Count;
 }
