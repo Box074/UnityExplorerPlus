@@ -8,6 +8,7 @@ global using Modding;
 global using UnityEngine;
 global using UnityEngine.UI;
 global using HKTool;
+global using HKTool.Reflection;
 
 global using UnityExplorer;
 global using UnityExplorer.Inspectors;

@@ -4,13 +4,9 @@ namespace UnityExplorerPlusMod;
 class UnityExplorerPlus : ModBase
 {
     public static Dictionary<int, MouseInspectorBase> inspectors = new();
+    public static ReflectionObject mouseInspector = null;
     public override void Initialize()
     {
-        if (typeof(UExplorer.UExplorer)
-            .GetMethod("PatchWorldInspector", BindingFlags.Static | BindingFlags.NonPublic) is null)
-        {
-            WorldInspectPatch.PatchWorldInspector();
-        }
         Init().StartCoroutine();
     }
     public static void AddInspector(string name, MouseInspectorBase inspector)
@@ -23,12 +19,14 @@ class UnityExplorerPlus : ModBase
     {
         while (UnityExplorer.UI.UIManager.Initializing) yield return null;
 
+        mouseInspector = MouseInspector.Instance.CreateReflectionObject();
+
         InitPanel();
 
-        AddInspector("Renderer", new RendererInspector());
+        //AddInspector("Renderer", new RendererInspector());
         AddInspector("Enemy", new EnemyInspector());
-        HookEndpointManager.Add(typeof(InspectUnderMouse).GetMethod("OnDropdownSelect"), PatchOnDropdownSelect);
-        HookEndpointManager.Add(typeof(InspectUnderMouse).GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
+        HookEndpointManager.Add(typeof(MouseInspector).GetMethod("OnDropdownSelect"), PatchOnDropdownSelect);
+        HookEndpointManager.Add(typeof(MouseInspector).GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
     }
 
     public void InitPanel()
@@ -59,10 +57,10 @@ class UnityExplorerPlus : ModBase
         }
     }
 
-    public MouseInspectorBase Patch_get_CurrentInspector(Func<InspectUnderMouse, MouseInspectorBase> orig,
-        InspectUnderMouse self)
+    public MouseInspectorBase Patch_get_CurrentInspector(Func<MouseInspector, MouseInspectorBase> orig,
+        MouseInspector self)
     {
-        if (inspectors.TryGetValue((int)InspectUnderMouse.Mode, out var insp))
+        if (inspectors.TryGetValue((int)MouseInspector.Mode, out var insp))
         {
             return insp;
         }
@@ -76,7 +74,7 @@ class UnityExplorerPlus : ModBase
         if (inspectors.TryGetValue(index, out var insp))
         {
             InspectorPanel.Instance.MouseInspectDropdown.value = 0;
-            InspectUnderMouse.Instance.StartInspect((MouseInspectMode)index);
+            MouseInspector.Instance.StartInspect((MouseInspectMode)index);
         }
         else
         {
