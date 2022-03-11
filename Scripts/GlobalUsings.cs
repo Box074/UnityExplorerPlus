@@ -5,6 +5,7 @@ global using System.Collections.Generic;
 global using System.Reflection;
 global using System.Linq;
 global using Modding;
+global using Modding.Converters;
 global using UnityEngine;
 global using UnityEngine.UI;
 global using HKTool;
@@ -27,3 +28,9 @@ global using UniverseLib.UI;
 global using UniverseLib.UI.Models;
 global using UniverseLib.UI.Widgets;
 global using UniverseLib.UI.Widgets.ScrollView;
+
+global using HutongGames.PlayMaker;
+global using HutongGames.PlayMaker.Actions;
+
+global using Newtonsoft.Json;
+

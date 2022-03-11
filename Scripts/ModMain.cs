@@ -1,7 +1,7 @@
 
 namespace UnityExplorerPlusMod;
 
-class UnityExplorerPlus : ModBase
+class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 {
     public static Dictionary<int, MouseInspectorBase> inspectors = new();
     public static ReflectionObject mouseInspector = null;

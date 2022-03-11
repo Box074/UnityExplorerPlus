@@ -7,4 +7,8 @@ abstract class CustomPanel : UIPanel
     public override UnityExplorer.UI.UIManager.Panels PanelType => panelType;
     public override bool ShouldSaveActiveState => true;
     public override bool ShowByDefault => true;
+    public override void ApplySaveData()
+    {
+
+    }
 }

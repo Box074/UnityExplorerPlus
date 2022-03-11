@@ -34,7 +34,7 @@ class RendererInspector : MouseInspectorBase
     {
         if(go == null)
         {
-            WorldInspectPatch.methodInfo_ClearHitData.Invoke(MouseInspector.Instance, null);
+            UnityExplorerPlus.mouseInspector.InvokeMethod("ClearHitData");
             return;
         }
         objNameLabel.text = "<b>Click to Inspect:</b> <color=cyan>" + go.name + "</color>";

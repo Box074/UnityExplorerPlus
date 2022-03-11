@@ -20,7 +20,8 @@ class EnemyInspector : MouseInspectorBase
     {
         if (go == null)
         {
-            WorldInspectPatch.methodInfo_ClearHitData.FastInvoke(MouseInspector.Instance);
+            UnityExplorerPlus.mouseInspector.InvokeMethod("ClearHitData");
+            //WorldInspectPatch.methodInfo_ClearHitData.FastInvoke(MouseInspector.Instance);
             return;
         }
         objNameLabel.text = "<b>Click to Inspect:</b> <color=cyan>" + go.name + "</color>";
