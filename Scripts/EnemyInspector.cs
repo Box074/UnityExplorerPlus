@@ -36,7 +36,7 @@ class EnemyInspector : MouseInspectorBase
         var cam = Camera.main;
         if (cam == null)
         {
-            MouseInspector.Instance.StopInspect();
+            UnityExplorerPlus.mouseInspector.InvokeMethod("StopInspect");
             return;
         }
         var mousePos = Input.mousePosition;

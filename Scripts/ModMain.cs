@@ -3,8 +3,23 @@ namespace UnityExplorerPlusMod;
 
 class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 {
+    private static Type _TMouseInspector;
+    public static Type MouseInspectorType
+    {
+        get
+        {
+            if(_TMouseInspector is null)
+            {
+                _TMouseInspector = 
+                    HKTool.Reflection.ReflectionHelper.FindType("UnityExplorer.Inspectors.MouseInspector") ??
+                    HKTool.Reflection.ReflectionHelper.FindType("UnityExplorer.Inspectors.InspectUnderMouse");
+            }
+            return _TMouseInspector;
+        }
+    }
     public static Dictionary<int, MouseInspectorBase> inspectors = new();
     public static ReflectionObject mouseInspector = null;
+    public readonly static ReflectionObject RTMouseInspactor = MouseInspectorType.CreateReflectionObject();
     public override void Initialize()
     {
         Init().StartCoroutine();
@@ -19,14 +34,14 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
     {
         while (UnityExplorer.UI.UIManager.Initializing) yield return null;
 
-        mouseInspector = MouseInspector.Instance.CreateReflectionObject();
+        mouseInspector = RTMouseInspactor["Instance"];
 
         InitPanel();
 
         //AddInspector("Renderer", new RendererInspector());
         AddInspector("Enemy", new EnemyInspector());
-        HookEndpointManager.Add(typeof(MouseInspector).GetMethod("OnDropdownSelect"), PatchOnDropdownSelect);
-        HookEndpointManager.Add(typeof(MouseInspector).GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
+        HookEndpointManager.Add(MouseInspectorType.GetMethod("OnDropdownSelect"), PatchOnDropdownSelect);
+        HookEndpointManager.Add(MouseInspectorType.GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
     }
 
     public void InitPanel()
@@ -57,10 +72,10 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         }
     }
 
-    public MouseInspectorBase Patch_get_CurrentInspector(Func<MouseInspector, MouseInspectorBase> orig,
-        MouseInspector self)
+    public MouseInspectorBase Patch_get_CurrentInspector(Func<object, MouseInspectorBase> orig,
+        object self)
     {
-        if (inspectors.TryGetValue((int)MouseInspector.Mode, out var insp))
+        if (inspectors.TryGetValue((int)RTMouseInspactor["Mode"].As<MouseInspectMode>(), out var insp))
         {
             return insp;
         }
@@ -74,7 +89,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         if (inspectors.TryGetValue(index, out var insp))
         {
             InspectorPanel.Instance.MouseInspectDropdown.value = 0;
-            MouseInspector.Instance.StartInspect((MouseInspectMode)index);
+            mouseInspector.InvokeMethod("StartInspect", (MouseInspectMode)index);
         }
         else
         {
