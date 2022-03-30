@@ -8,9 +8,9 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
     {
         get
         {
-            if(_TMouseInspector is null)
+            if (_TMouseInspector is null)
             {
-                _TMouseInspector = 
+                _TMouseInspector =
                     HKTool.Reflection.ReflectionHelper.FindType("UnityExplorer.Inspectors.MouseInspector") ??
                     HKTool.Reflection.ReflectionHelper.FindType("UnityExplorer.Inspectors.InspectUnderMouse");
             }
@@ -42,6 +42,22 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         AddInspector("Enemy", new EnemyInspector());
         HookEndpointManager.Add(MouseInspectorType.GetMethod("OnDropdownSelect"), PatchOnDropdownSelect);
         HookEndpointManager.Add(MouseInspectorType.GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
+
+        if (typeof(InspectorManager).Assembly.GetName().Version >= new Version(4, 6, 0, 0))
+        {
+            if (HaveAssembly("GODump"))
+            {
+                Log("Found GODump");
+                GODumpExt.Init();
+            }
+            if (HaveAssembly("Satchel"))
+            {
+                Log("Found Satchel");
+                FsmDumpExt.Init();
+            }
+        }
+        //GODump
+
     }
 
     public void InitPanel()

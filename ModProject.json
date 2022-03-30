@@ -1,14 +1,15 @@
 {
   "ProjectName": "UnityExplorerPlus",
-  "ModVersion": "0.0.5.0",
+  "ModVersion": "0.1.0.0",
   "CodeDir": ".\\Scripts\\",
   "EmbeddedResourceDir": ".\\EmbeddedResource\\",
   "EmbeddedResource": {},
   "Guid": "bf0b224b-7676-4dca-a5f0-52e7acc4e69e",
   "DependenciesDir": ".\\Dependencies\\",
-  "ModdingAPIVersion": "1.5.78.11833-67",
+  "ModdingAPIVersion": "1.5.78.11833-69",
   "IgnoreDlls": [],
   "WebDependencies": [
-    "https://github.com/jngo102/UExplorer/releases/download/08-03-2022/UExplorer.zip"
+    "https://github.com/jngo102/UExplorer/releases/download/22-03-2022/UExplorer.zip",
+    "https://github.com/jngo102/HollowKnight.GODump/releases/download/22-02-2022/GODump.zip"
   ]
 }
