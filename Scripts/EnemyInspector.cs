@@ -43,9 +43,8 @@ class EnemyInspector : MouseInspectorBase
         mousePos.z = cam.WorldToScreenPoint(Vector3.zero).z;
         var worldPos = cam.ScreenToWorldPoint(mousePos);
         var hit = Physics2D.OverlapPointAll(worldPos, Physics2D.AllLayers)
-            .Where(x=> x.GetComponent<HealthManager>() != null)
-            .FirstOrDefault(x =>
-            x.transform.position.z > 0);
+            .Where(x=> x.GetComponent<HealthManager>() is not null)
+            .FirstOrDefault();
         var go = hit?.gameObject;
         if (go != lastHit)
         {

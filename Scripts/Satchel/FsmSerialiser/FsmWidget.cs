@@ -48,7 +48,7 @@ class FsmWidget : UnityObjectWidget
         var dir = Path.GetDirectoryName(sp);
         if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
-        var data = Activator.CreateInstance(FsmDumpExt.TFsmDataInstance, (object)fsm.FsmComponent);
+        var data = Activator.CreateInstance(SatchelExt.TFsmDataInstance, (object)fsm.FsmComponent);
         var json = JsonConvert.SerializeObject(data, Formatting.Indented, new JsonSerializerSettings
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
