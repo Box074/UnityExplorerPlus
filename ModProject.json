@@ -9,8 +9,8 @@
   "ModdingAPIVersion": "1.5.78.11833-69",
   "IgnoreDlls": [],
   "WebDependencies": [
-    "https://github.com/jngo102/UExplorer/releases/download/22-03-2022/UExplorer.zip",
-    "https://github.com/jngo102/HollowKnight.GODump/releases/download/22-02-2022/GODump.zip",
-    "https://github.com/PrashantMohta/Satchel/releases/download/v0.7.5/Satchel.dll"
+    "https://github.com/jngo102/UExplorer/releases/latest/download/UExplorer.zip",
+    "https://github.com/jngo102/HollowKnight.GODump/releases/latest/download/GODump.zip",
+    "https://github.com/PrashantMohta/Satchel/releases/latest/download/Satchel.dll"
   ]
 }
