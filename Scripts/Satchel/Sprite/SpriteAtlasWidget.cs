@@ -1,9 +1,9 @@
 
 namespace UnityExplorerPlusMod;
 
-class tk2dSpriteWidget : UnityObjectWidget
+class SpriteAtlasWidget : UnityObjectWidget
 {
-    public tk2dSpriteAnimation animation;
+    public SpriteAtlas atlas;
     public InputFieldRef savePathInput;
     public GameObject panel;
     public override GameObject CreateContent(GameObject uiRoot)
@@ -30,9 +30,9 @@ class tk2dSpriteWidget : UnityObjectWidget
     }
     private void OnClickSave()
     {
-        if (animation is null)
+        if (atlas is null)
         {
-            ExplorerCore.LogWarning("Animation is null, maybe it was destroyed?");
+            ExplorerCore.LogWarning("SpriteAtlas is null, maybe it was destroyed?");
             return;
         }
         if (string.IsNullOrEmpty(savePathInput.Text))
@@ -41,12 +41,21 @@ class tk2dSpriteWidget : UnityObjectWidget
             return;
         }
         Directory.CreateDirectory(savePathInput.Text);
-        Dump.DumpSpriteInUExplorer(animation, savePathInput.Text).StartCoroutine();
+        var sr = new Sprite[atlas.spriteCount];
+        atlas.GetSprites(sr);
+        foreach(var v in sr)
+        {
+            var p = Path.Combine(savePathInput.Text, v.name.Replace("(Clone)", "") + ".png");
+            var tex = SpriteUtils.ExtractTextureFromSprite(v, false);
+            File.WriteAllBytes(p, tex.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(tex);
+            UnityEngine.Object.DestroyImmediate(v);
+        }
     }
     public override void OnReturnToPool()
     {
         base.OnReturnToPool();
-        animation = null;
+        atlas = null;
         panel.transform.SetParent(Pool<tk2dSpriteWidget>.Instance.InactiveHolder.transform);
     }
     public override void OnBorrowed(object target, Type targetType, ReflectionInspector inspector)
@@ -55,24 +64,14 @@ class tk2dSpriteWidget : UnityObjectWidget
         panel.transform.SetParent(inspector.UIRoot.transform);
         panel.transform.SetSiblingIndex(inspector.UIRoot.transform.childCount - 2);
 
-        string text;
-        if (target is tk2dSpriteAnimator anim)
-        {
-            animation = anim.Library;
-            if (animation is null) return;
-            text = anim.name;
-        }
-        else
-        {
-            animation = (tk2dSpriteAnimation)target;
-            text = animation.name;
-        }
+        atlas = (SpriteAtlas)target;
+        var text = atlas.name;
         if (string.IsNullOrEmpty(text))
         {
             text = "untitled";
         }
         
         savePathInput.Text = Path.Combine(UnityExplorer.Config.ConfigManager.Default_Output_Path.Value,
-            "tk2d-" + text);
+            "Atlas-" + text);
     }
 }

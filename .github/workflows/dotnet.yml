@@ -1,0 +1,28 @@
+name: .NET
+
+on: [push, pull_request]
+
+jobs:
+  release:
+    runs-on: windows-latest
+    if: startsWith(github.ref, 'refs/tags')
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Download HKToolUtils
+      run: |
+        iwr -Uri "https://github.com/HKLab/HKToolUtils/releases/latest/download/net5.zip" -OutFile "HKToolUtils.zip"
+        Expand-Archive -Path HKToolUtils.zip -DestinationPath HKToolUtils
+    - name: Build
+      run: |
+        dotnet ./HKToolUtils/HKToolUtils.dll buildInGithub . > .\Info.txt
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        body_path: Info.txt
+        files: |
+          ./Output/UnityExplorerPlus.zip
+

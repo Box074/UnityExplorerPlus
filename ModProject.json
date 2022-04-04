@@ -6,11 +6,13 @@
   "EmbeddedResource": {},
   "Guid": "bf0b224b-7676-4dca-a5f0-52e7acc4e69e",
   "DependenciesDir": ".\\Dependencies\\",
-  "ModdingAPIVersion": "1.5.78.11833-69",
   "IgnoreDlls": [],
   "WebDependencies": [
     "https://github.com/jngo102/UExplorer/releases/latest/download/UExplorer.zip",
     "https://github.com/jngo102/HollowKnight.GODump/releases/latest/download/GODump.zip",
     "https://github.com/PrashantMohta/Satchel/releases/latest/download/Satchel.dll"
-  ]
+  ],
+  "UseGZip": true,
+  "CreateZip": true,
+  "EnableNullable": false
 }

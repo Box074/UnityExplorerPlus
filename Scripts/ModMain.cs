@@ -3,20 +3,9 @@ namespace UnityExplorerPlusMod;
 
 class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 {
-    private static Type _TMouseInspector;
-    public static Type MouseInspectorType
-    {
-        get
-        {
-            if (_TMouseInspector is null)
-            {
-                _TMouseInspector =
-                    HKTool.Reflection.ReflectionHelper.FindType("UnityExplorer.Inspectors.MouseInspector") ??
-                    HKTool.Reflection.ReflectionHelper.FindType("UnityExplorer.Inspectors.InspectUnderMouse");
-            }
-            return _TMouseInspector;
-        }
-    }
+    private static Lazy<Type> _TMouseInspector = new(() => HReflectionHelper.FindType("UnityExplorer.Inspectors.MouseInspector") ??
+                    HReflectionHelper.FindType("UnityExplorer.Inspectors.InspectUnderMouse"));
+    public static Type MouseInspectorType => _TMouseInspector.Value;
     public static Dictionary<int, MouseInspectorBase> inspectors = new();
     public static ReflectionObject mouseInspector = null;
     public readonly static ReflectionObject RTMouseInspactor = MouseInspectorType.CreateReflectionObject();
@@ -57,8 +46,6 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
                 SatchelExt.Init();
             }
         }
-        //GODump
-
     }
 
     public void InitPanel()

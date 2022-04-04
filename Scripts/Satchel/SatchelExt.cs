@@ -7,6 +7,7 @@ static class SatchelExt
     public static void Init()
     {
         WidgetManager.RegisterType(typeof(Sprite), typeof(SpriteWidget));
+        WidgetManager.RegisterType(typeof(SpriteAtlas), typeof(SpriteAtlasWidget));
         if(TFsmDataInstance is not null) 
         {
             WidgetManager.RegisterType(typeof(PlayMakerFSM), typeof(FsmWidget));

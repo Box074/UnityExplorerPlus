@@ -8,6 +8,7 @@ global using System.Linq;
 global using Modding;
 global using Modding.Converters;
 global using UnityEngine;
+global using UnityEngine.U2D;
 global using UnityEngine.UI;
 global using HKTool;
 global using HKTool.Reflection;
