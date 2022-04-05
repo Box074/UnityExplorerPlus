@@ -6,11 +6,14 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
     private static Lazy<Type> _TMouseInspector = new(() => HReflectionHelper.FindType("UnityExplorer.Inspectors.MouseInspector") ??
                     HReflectionHelper.FindType("UnityExplorer.Inspectors.InspectUnderMouse"));
     public static Type MouseInspectorType => _TMouseInspector.Value;
+    public static Dictionary<string, string> prefabMap = null;
     public static Dictionary<int, MouseInspectorBase> inspectors = new();
     public static ReflectionObject mouseInspector = null;
     public readonly static ReflectionObject RTMouseInspactor = MouseInspectorType.CreateReflectionObject();
     public override void Initialize()
     {
+        prefabMap = 
+            JsonConvert.DeserializeObject<Dictionary<string, string>>(System.Text.Encoding.UTF8.GetString(this.GetEmbeddedResource("UnityExplorerPlus.Prefabs.json")));
         Init().StartCoroutine();
     }
     public static void AddInspector(string name, MouseInspectorBase inspector)
@@ -46,6 +49,8 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
                 SatchelExt.Init();
             }
         }
+
+        PatchGameObjectControls.Init();
     }
 
     public void InitPanel()

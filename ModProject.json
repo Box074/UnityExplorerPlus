@@ -2,8 +2,10 @@
   "ProjectName": "UnityExplorerPlus",
   "ModVersion": "0.4.0.0",
   "CodeDir": ".\\Scripts\\",
-  "EmbeddedResourceDir": ".\\EmbeddedResource\\",
-  "EmbeddedResource": {},
+  "EmbeddedResourceDir": ".\\Res\\",
+  "EmbeddedResource": {
+    "prefabMap.json": "UnityExplorerPlus.Prefabs.json"
+  },
   "Guid": "bf0b224b-7676-4dca-a5f0-52e7acc4e69e",
   "DependenciesDir": ".\\Dependencies\\",
   "IgnoreDlls": [],

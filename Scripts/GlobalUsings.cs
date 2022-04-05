@@ -11,6 +11,7 @@ global using UnityEngine;
 global using UnityEngine.U2D;
 global using UnityEngine.UI;
 global using HKTool;
+global using HKTool.Utils;
 global using HKTool.Reflection;
 global using HReflectionHelper = HKTool.Reflection.ReflectionHelper;
 
