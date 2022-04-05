@@ -32,15 +32,16 @@ static class PatchGameObjectControls
                 else info.showPrefabBtn.Component.gameObject.SetActive(false);
                 if(!go.scene.IsValid())
                 {
+                    destroyBtn.SetActive(false);
+                    showExplorerBtn.SetActive(false);
+                    sceneLabel.text = "Assets:";
+                    var text = Modding.ReflectionHelper.GetField<GameObjectControls, InputFieldRef>(self, "SceneInput");
                     if(UnityExplorerPlus.prefabMap.TryGetValue(go.transform.root.gameObject.name, out var n))
                     {
-                        destroyBtn.SetActive(false);
-                        showExplorerBtn.SetActive(false);
-                        sceneLabel.text = "Assets:";
-                        Modding.ReflectionHelper.GetField<GameObjectControls, InputFieldRef>(self, "SceneInput")
-                            .Text = n + ".assets (Prefab)";
+                        text.Text = n + ".assets (Prefab)";
                         return;
                     }
+                    text.Text = "Not recorded";
                 }
                 else
                 {
@@ -48,7 +49,17 @@ static class PatchGameObjectControls
                     var t0 = go.name.IndexOf('(');
 
                     var prefabName = t0 == -1 ? go.name : go.name.Substring(0, t0).Trim();
-                    if(UnityExplorerPlus.prefabMap.TryGetValue(prefabName, out var n))
+                    var cs = go.GetComponents<Component>()
+                            .Select(x => x.GetType().AssemblyQualifiedName)
+                            .ToArray();
+                    var pb = Resources.FindObjectsOfTypeAll<GameObject>()
+                            .Where(
+                                x => x.name == prefabName && !x.scene.IsValid()
+                            )
+                            .FirstOrDefault(
+                                x => x.GetComponents<Component>().All(x => cs.Contains(x.GetType().AssemblyQualifiedName))
+                            );
+                    if(pb is not null)
                     {
                         if(info is null)
                         {
@@ -69,22 +80,12 @@ static class PatchGameObjectControls
                             info.showPrefabBtn.Component.gameObject.SetActive(false);
                             dict.Add(self, info);
                         }
-                        var cs = go.GetComponents<Component>()
-                            .Select(x => x.GetType().AssemblyQualifiedName)
-                            .ToArray();
-                        var pb = Resources.FindObjectsOfTypeAll<GameObject>()
-                            .Where(
-                                x => x.name == prefabName && !x.scene.IsValid()
-                            )
-                            .FirstOrDefault(
-                                x => x.GetComponents<Component>().All(x => cs.Contains(x.GetType().AssemblyQualifiedName))
-                            );
-                        if(pb is not null)
-                        {
-                            info.prefab = pb;
-                            info.showPrefabBtn.Component.gameObject.SetActive(true);
-                            //showExplorerBtn.SetActive(false);
-                        }
+
+
+                        info.prefab = pb;
+                        info.showPrefabBtn.Component.gameObject.SetActive(true);
+                        //showExplorerBtn.SetActive(false);
+                        
                         return;
                     }
                 }
