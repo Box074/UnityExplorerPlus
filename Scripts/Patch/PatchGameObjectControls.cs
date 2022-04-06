@@ -54,7 +54,7 @@ static class PatchGameObjectControls
                             .ToArray();
                     var pb = Resources.FindObjectsOfTypeAll<GameObject>()
                             .Where(
-                                x => x.name == prefabName && !x.scene.IsValid()
+                                x => x.name == prefabName && !x.scene.IsValid() && x.transform.parent == null
                             )
                             .FirstOrDefault(
                                 x => x.GetComponents<Component>().All(x => cs.Contains(x.GetType().AssemblyQualifiedName))
