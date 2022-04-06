@@ -6,6 +6,7 @@
 2. Added Mods panel to help developers quickly find Mod instances
 3. Show FsmName behind PlayMakerFSM component in GameObject view of UntiyExplorer Inspector panel
 4. Easier to inspect Fsm in Inspector panel
+5. Makes finding Prefabs easier
 
 ## Work with other mods
 
