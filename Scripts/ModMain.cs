@@ -32,6 +32,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 
         //AddInspector("Renderer", new RendererInspector());
         AddInspector("Enemy", new EnemyInspector());
+        AddInspector("World Position", new WorldPositionPin());
         HookEndpointManager.Add(MouseInspectorType.GetMethod("OnDropdownSelect"), PatchOnDropdownSelect);
         HookEndpointManager.Add(MouseInspectorType.GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
 
@@ -41,7 +42,6 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         {
             if (HaveAssembly("GODump"))
             {
-                Log("Found GODump");
                 GODumpExt.Init();
             }
             if (HaveAssembly("Satchel"))
