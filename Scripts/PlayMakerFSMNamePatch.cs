@@ -39,6 +39,10 @@ static class PlayMakerFSMNamePatch
                 {
                     return $"<color=grey>Fsm Event: </color><color=green>{ev.Name}</color>";
                 }
+                if(value is NamedVariable v)
+                {
+                    return $"<color=grey>Fsm Variable(</color><color=green>{v.VariableType.ToString()}</color><color=grey>): </color><color=green>{v.Name}</color>";
+                }
                 return orig(value, fallbackType, includeNamespace);
             }
         );
