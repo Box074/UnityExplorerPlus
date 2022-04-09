@@ -36,7 +36,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         HookEndpointManager.Add(MouseInspectorType.GetMethod("OnDropdownSelect"), PatchOnDropdownSelect);
         HookEndpointManager.Add(MouseInspectorType.GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
 
-        PlayMakerFSMNamePatch.Init();
+        FsmUtils.Init();
 
         if (typeof(InspectorManager).Assembly.GetName().Version >= new Version(4, 6, 0, 0))
         {

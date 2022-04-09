@@ -1,7 +1,7 @@
 
 namespace UnityExplorerPlusMod;
 
-static class PlayMakerFSMNamePatch
+static class FsmUtils
 {
     public static FieldInfo FGetEntries = typeof(ComponentList).GetField("GetEntries", HReflectionHelper.All);
     public static void Init()
@@ -46,5 +46,8 @@ static class PlayMakerFSMNamePatch
                 return orig(value, fallbackType, includeNamespace);
             }
         );
+
+        ParseManager.Register(typeof(FsmEvent), (ev) => ((FsmEvent)ev).Name,
+            (name) => FsmEvent.GetFsmEvent(name));
     }
 }

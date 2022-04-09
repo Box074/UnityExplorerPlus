@@ -16,6 +16,8 @@ global using HKTool.Reflection;
 global using HReflectionHelper = HKTool.Reflection.ReflectionHelper;
 
 global using UnityExplorer;
+global using UnityExplorer.CacheObject;
+global using UnityExplorer.CacheObject.Views;
 global using UnityExplorer.Inspectors;
 global using UnityExplorer.Inspectors.MouseInspectors;
 global using UnityExplorer.UI;
