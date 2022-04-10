@@ -1,13 +1,8 @@
 
 namespace UnityExplorerPlusMod;
 
-class tk2dClipDumpWidget : DumpWidgetBase<tk2dSpriteWidget>
+class tk2dClipDumpWidget : DumpNonUnityObject<tk2dClipDumpWidget>
 {
-    public static UnityEngine.Object fakeUObject = new FakeUObject();
-    static tk2dClipDumpWidget() 
-    {
-        UnityEngine.Object.DontDestroyOnLoad(fakeUObject);
-    }
     public tk2dSpriteAnimationClip clip;
     protected override void OnSave(string savePath)
     {
@@ -17,15 +12,18 @@ class tk2dClipDumpWidget : DumpWidgetBase<tk2dSpriteWidget>
             return;
         }
         Directory.CreateDirectory(savePath);
-        Dump.DumpClip(clip, savePath).StartCoroutine();
+        DumpClip(savePath).StartCoroutine();
     }
-
-    public override GameObject CreateContent(GameObject uiRoot)
+    private IEnumerator DumpClip(string savePath)
     {
-        var result = base.CreateContent(uiRoot);
-        UnityEngine.Object.Destroy(UIRoot.FindChild("InstanceLabel"));
-        instanceIdInput.Component.gameObject.SetActive(false);
-        return result;
+        var info = new SpriteInfo();
+        yield return Dump.DumpClip(clip, savePath, info);
+        if(GODump.GODump.Settings.DumpSpriteInfo)
+        {
+            var path = Path.Combine(savePath, "0.Atlases", "SpriteInfo.json");
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            File.WriteAllText(path, JsonConvert.SerializeObject(info, Formatting.Indented));
+        }
     }
 
     public override void OnReturnToPool()
@@ -35,9 +33,7 @@ class tk2dClipDumpWidget : DumpWidgetBase<tk2dSpriteWidget>
     }
     public override void OnBorrowed(object target, Type targetType, ReflectionInspector inspector)
     {
-        base.OnBorrowed(fakeUObject, targetType, inspector);
-
-        instanceIdInput.Component.gameObject.SetActive(false);
+        base.OnBorrowed(target, targetType, inspector);
 
         clip = (tk2dSpriteAnimationClip)target;
         
@@ -47,7 +43,6 @@ class tk2dClipDumpWidget : DumpWidgetBase<tk2dSpriteWidget>
         {
             text = "untitled";
         }
-        nameInput.Text = text;
         SetDefaultPath("tk2dClip-" + text);
     }
 }

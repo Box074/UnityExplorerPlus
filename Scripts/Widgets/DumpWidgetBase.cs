@@ -15,7 +15,7 @@ public abstract class DumpWidgetBase<T> : UnityObjectWidget where T : DumpWidget
         {
             panel.SetActive(!panel.activeSelf);
         });
-        UIFactory.SetLayoutElement(toggleButton.Component.gameObject, 170, 25, null, null, null, null, null);
+        UIFactory.SetLayoutElement(toggleButton.Component.gameObject, 100, 25, null, null, null, null, null);
         var parent = UIFactory.CreateHorizontalGroup(uiRoot, "Save Row", false, false, true, true, 2, new Vector4(2f, 2f, 2f, 2f), new Color(0.1f, 0.1f, 0.1f), null);
         UIFactory.SetLayoutElement(parent, null, null, 9999, 35, null, null, null);
         panel = parent;
