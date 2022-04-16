@@ -12,6 +12,7 @@ class tk2dSpriteWidget : DumpWidgetBase<tk2dSpriteWidget>
             return;
         }
         Directory.CreateDirectory(savePath);
+        GODump.GODump.Instance.LoadSettings();
         Dump.DumpSpriteInUExplorer(animation, savePath).StartCoroutine();
     }
 

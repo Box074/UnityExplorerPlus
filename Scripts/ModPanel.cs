@@ -14,7 +14,8 @@ class ModPanel : CustomPanel, ICellPoolDataSource<ModCell>
     public static FieldInfo FMod = TModInstance.GetField("Mod");
     public static Type TModInstanceSet = typeof(HashSet<>).MakeGenericType(TModInstance);
     public static MethodInfo MGetEnumerator = TModInstanceSet.GetMethod("GetEnumerator");
-    public override void ConstructPanelContent()
+    public ModPanel(UIBase owner) : base(owner) { }
+    protected override void ConstructPanelContent()
     {
         /* UiRoot = UIFactory.CreateHorizontalGroup(uiContent, "TabBar", true, 
             true, true, true, 2, new Vector4(2f, 2f, 2f, 2f), default(Color), null);
@@ -36,14 +37,21 @@ class ModPanel : CustomPanel, ICellPoolDataSource<ModCell>
         typeof(ScrollPool<ModCell>).GetMethod("Initialize").Invoke(scrollPool, new object[] { this, null });
         Refresh();
     }
-    protected override void DoSetDefaultPosAndAnchors()
+    public override Vector2 DefaultAnchorMin
     {
-        Rect.localPosition = Vector2.zero;
-        Rect.pivot = new Vector2(0f, 1f);
-        Rect.anchorMin = new Vector2(0, -0.1744325f);
-        Rect.anchorMax = new Vector2(0.3215279f, 0.4169654f);
-        Rect.anchoredPosition = new Vector2(243, 289);
+        get
+        {
+            return new Vector2(0, -0.1744325f);
+        }
     }
+    public override Vector2 DefaultAnchorMax
+    {
+        get
+        {
+            return new Vector2(0.3215279f, 0.4169654f);
+        }
+    }
+
     public void Refresh()
     {
         var mods = (IEnumerator)MGetEnumerator.Invoke(FModInstances.GetValue(null, null), null);

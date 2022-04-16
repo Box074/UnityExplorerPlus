@@ -55,11 +55,14 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 
     public void InitPanel()
     {
+
+        var uibase = typeof(UnityExplorer.UI.UIManager).CreateReflectionObject()
+            ["<UiBase>k__BackingField"].As<UIBase>();
         var panels = new CustomPanel[]
         {
-            new ModPanel()
+            new ModPanel(uibase)
         };
-        var UIPanels = (Dictionary<UnityExplorer.UI.UIManager.Panels, UIPanel>)typeof(UnityExplorer.UI.UIManager)
+        var UIPanels = (Dictionary<UnityExplorer.UI.UIManager.Panels, UEPanel>)typeof(UnityExplorer.UI.UIManager)
             .GetField("UIPanels", BindingFlags.Static | BindingFlags.NonPublic)
             .GetValue(null);
         int id = UIPanels.Count;
@@ -69,9 +72,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
             v.panelType = (UnityExplorer.UI.UIManager.Panels)id;
             try
             {
-                v.ConstructUI();
                 UnityExplorer.UI.UIManager.SetPanelActive(v, false);
-                v.ApplySaveData();
             }
             catch (Exception e)
             {

@@ -17,6 +17,7 @@ class tk2dClipDumpWidget : DumpNonUnityObject<tk2dClipDumpWidget>
     private IEnumerator DumpClip(string savePath)
     {
         var info = new SpriteInfo();
+        GODump.GODump.Instance.LoadSettings();
         yield return Dump.DumpClip(clip, savePath, info);
         if(GODump.GODump.Settings.DumpSpriteInfo)
         {

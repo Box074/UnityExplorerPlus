@@ -1,6 +1,6 @@
 {
   "ProjectName": "UnityExplorerPlus",
-  "ModVersion": "0.5.1.0",
+  "ModVersion": "0.6.0.0",
   "CodeDir": ".\\Scripts\\",
   "EmbeddedResourceDir": ".\\Res\\",
   "EmbeddedResource": {
@@ -16,5 +16,8 @@
   ],
   "UseGZip": true,
   "CreateZip": true,
+  "ZipFiles": {
+    "../README.md": "README.md"
+  },
   "EnableNullable": false
 }
