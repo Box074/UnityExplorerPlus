@@ -13,6 +13,7 @@ global using UnityEngine.UI;
 global using HKTool;
 global using HKTool.Utils;
 global using HKTool.Reflection;
+global using static HKTool.Utils.Compile.ReflectionHelperEx;
 global using HReflectionHelper = HKTool.Reflection.ReflectionHelper;
 
 global using UnityExplorer;

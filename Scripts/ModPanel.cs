@@ -8,10 +8,10 @@ class ModPanel : CustomPanel, ICellPoolDataSource<ModCell>
     public override string Name => "Mods";
     public List<IMod> modCache = new();
     public ScrollPool<ModCell> scrollPool;
-    public static Type TModLoader = typeof(Mod).Assembly.GetType("Modding.ModLoader");
+    public static Type TModLoader = FindType("Modding.ModLoader")!;
     public static PropertyInfo FModInstances = TModLoader.GetProperty("ModInstances");
-    public static Type TModInstance = TModLoader.GetNestedType("ModInstance");
-    public static FieldInfo FMod = TModInstance.GetField("Mod");
+    public static Type TModInstance = FindType("Modding.ModLoader+ModInstance")!;
+    public static FieldInfo FMod = FindFieldInfo("Modding.ModLoader+ModInstance::Mod")!;
     public static Type TModInstanceSet = typeof(HashSet<>).MakeGenericType(TModInstance);
     public static MethodInfo MGetEnumerator = TModInstanceSet.GetMethod("GetEnumerator");
     public ModPanel(UIBase owner) : base(owner) { }

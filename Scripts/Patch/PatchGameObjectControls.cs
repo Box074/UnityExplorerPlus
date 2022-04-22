@@ -11,7 +11,8 @@ static class PatchGameObjectControls
     public static Dictionary<GameObjectControls, GOCInfo> dict = new();
     public static void Init()
     {
-        HookEndpointManager.Add(typeof(GameObjectControls).GetMethod("UpdateGameObjectInfo"),
+        HookEndpointManager.Add(
+            FindMethodBase("UnityExplorer.Inspectors.GameObjectControls::UpdateGameObjectInfo"),//typeof(GameObjectControls).GetMethod("UpdateGameObjectInfo"),
             (Action<GameObjectControls, bool, bool> orig, GameObjectControls self, bool firstUpdate, bool force) =>
             {
                 orig(self, firstUpdate, force);

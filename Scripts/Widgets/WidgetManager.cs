@@ -18,7 +18,7 @@ static class WidgetManager
     private static void Init()
     {
         HookEndpointManager.Add(
-            typeof(UnityObjectWidget).GetMethod("GetUnityWidget"),
+            FindMethodBase("UnityExplorer.UI.Widgets.UnityObjectWidget::GetUnityWidget"),
             (Func<object, Type, ReflectionInspector, UnityObjectWidget> orig,
                 object target, Type targetType, ReflectionInspector inspector) =>
                 {
