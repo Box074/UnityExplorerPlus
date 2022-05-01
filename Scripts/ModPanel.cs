@@ -20,6 +20,10 @@ class ModPanel : CustomPanel, ICellPoolDataSource<ModCell>
         /* UiRoot = UIFactory.CreateHorizontalGroup(uiContent, "TabBar", true, 
             true, true, true, 2, new Vector4(2f, 2f, 2f, 2f), default(Color), null);
         UIFactory.SetLayoutElement(UiRoot, null, 25, null, 0, null, null, null);*/
+        var title = UIRoot.FindChildWithPath("Content", "TitleBar").transform;
+        title.parent = UIRoot.transform;
+        title.SetAsFirstSibling();
+        UnityEngine.Object.Destroy(UIRoot.FindChildWithPath("Content"));
         scrollPool = UIFactory.CreateScrollPool<ModCell>(UIRoot, "ModList", out var root,
             out var content, new Color(0.11f, 0.11f, 0.11f));
         UIFactory.SetLayoutElement(root, null, null, null, 9999, null, null, null);

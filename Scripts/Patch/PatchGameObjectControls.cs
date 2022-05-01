@@ -12,11 +12,11 @@ static class PatchGameObjectControls
     public static void Init()
     {
         HookEndpointManager.Add(
-            FindMethodBase("UnityExplorer.Inspectors.GameObjectControls::UpdateGameObjectInfo"),//typeof(GameObjectControls).GetMethod("UpdateGameObjectInfo"),
+            FindMethodBase("UnityExplorer.UI.Widgets.GameObjectControls::UpdateGameObjectInfo"),//typeof(GameObjectControls).GetMethod("UpdateGameObjectInfo"),
             (Action<GameObjectControls, bool, bool> orig, GameObjectControls self, bool firstUpdate, bool force) =>
             {
                 orig(self, firstUpdate, force);
-                var go = self.Parent.GOTarget;
+                var go = (GameObject)self.Parent.Target;
                 
                 var showExplorerBtn = self.Parent.Content.GetComponentsInChildren<Transform>(true)
                     .FirstOrDefault(x => x.gameObject.name == "ExploreBtn").gameObject;
@@ -33,13 +33,22 @@ static class PatchGameObjectControls
                 else info.showPrefabBtn.Component.gameObject.SetActive(false);
                 if(!go.scene.IsValid())
                 {
+                    var root = go.transform.root.gameObject;
                     destroyBtn.SetActive(false);
                     showExplorerBtn.SetActive(false);
                     sceneLabel.text = "Assets:";
-                    var text = Modding.ReflectionHelper.GetField<GameObjectControls, InputFieldRef>(self, "SceneInput");
-                    if(UnityExplorerPlus.prefabMap.TryGetValue(go.transform.root.gameObject.name, out var n))
+                    var text = (InputFieldRef)FindFieldInfo("UnityExplorer.UI.Widgets.GameObjectInfoPanel::SceneInput").FastGet(self.GameObjectInfo);
+                    var map = UnityExplorerPlus.prefabMap;
+                    var componentTable = root.GetComponents<Component>().Select(x => x.GetType().Name).ToArray();
+
+                    if(map.resources.TryGetValue(root.name, out var res) && res.All(x => componentTable.Contains(x)))
                     {
-                        text.Text = n + ".assets (Prefab)";
+                        text.Text = "resources.assets (Prefab)";
+                        return;
+                    }
+                    if(map.sharedAssets.TryGetValue(root.name, out var sres) && sres.compoents.All(x => componentTable.Contains(x)))
+                    {
+                        text.Text = sres.assetFile + ".assets (Prefab)";
                         return;
                     }
                     text.Text = "Not recorded";
@@ -51,15 +60,23 @@ static class PatchGameObjectControls
 
                     var prefabName = t0 == -1 ? go.name : go.name.Substring(0, t0).Trim();
                     var cs = go.GetComponents<Component>()
-                            .Select(x => x.GetType().AssemblyQualifiedName)
+                            .Select(x => x.GetType().Name)
                             .ToArray();
                     var pb = Resources.FindObjectsOfTypeAll<GameObject>()
                             .Where(
                                 x => x.name == prefabName && !x.scene.IsValid() && x.transform.parent == null
                             )
                             .FirstOrDefault(
-                                x => x.GetComponents<Component>().All(x => cs.Contains(x.GetType().AssemblyQualifiedName))
+                                x => x.GetComponents<Component>().All(x => cs.Contains(x.GetType().Name))
                             );
+                    if(pb is null)
+                    {
+                        if(UnityExplorerPlus.prefabMap.resources.TryGetValue(prefabName, out var res)
+                            && res.All(x => cs.Contains(x)))
+                        {
+                            pb = Resources.LoadAll<GameObject>("").FirstOrDefault(x => x.name == prefabName);
+                        }
+                    }
                     if(pb is not null)
                     {
                         if(info is null)

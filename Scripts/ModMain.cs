@@ -3,17 +3,16 @@ namespace UnityExplorerPlusMod;
 
 class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 {
-    private static Lazy<Type> _TMouseInspector = new(() => HReflectionHelper.FindType("UnityExplorer.Inspectors.MouseInspector") ??
-                    HReflectionHelper.FindType("UnityExplorer.Inspectors.InspectUnderMouse"));
-    public static Type MouseInspectorType => _TMouseInspector.Value;
-    public static Dictionary<string, string> prefabMap = null;
+    public static Type MouseInspectorType => typeof(MouseInspector);
+    public static AssetsInfo prefabMap = null;
     public static Dictionary<int, MouseInspectorBase> inspectors = new();
     public static ReflectionObject mouseInspector = null;
     public readonly static ReflectionObject RTMouseInspactor = MouseInspectorType.CreateReflectionObject();
     public override void Initialize()
     {
-        prefabMap = 
-            JsonConvert.DeserializeObject<Dictionary<string, string>>(System.Text.Encoding.UTF8.GetString(this.GetEmbeddedResource("UnityExplorerPlus.Prefabs.json")));
+        prefabMap =
+            JsonConvert.DeserializeObject<AssetsInfo>(
+                System.Text.Encoding.UTF8.GetString(this.GetEmbeddedResource("UnityExplorerPlus.Prefabs.json")));
         Init().StartCoroutine();
     }
     public static void AddInspector(string name, MouseInspectorBase inspector)
@@ -22,11 +21,15 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         InspectorPanel.Instance.MouseInspectDropdown.options.Add(new(name));
         inspectors.Add(id, inspector);
     }
+    public override void OnCheckDependencies()
+    {
+        CheckAssembly("UnityExplorer.Standalone.Mono", new Version(4,7,12));
+    }
     private IEnumerator Init()
     {
         while (UnityExplorer.UI.UIManager.Initializing) yield return null;
 
-        mouseInspector = RTMouseInspactor["Instance"];
+        mouseInspector = MouseInspector.Instance.CreateReflectionObject();
 
         InitPanel();
 
@@ -38,16 +41,13 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 
         FsmUtils.Init();
 
-        if (typeof(InspectorManager).Assembly.GetName().Version >= new Version(4, 6, 0, 0))
+        if (HaveAssembly("GODump"))
         {
-            if (HaveAssembly("GODump"))
-            {
-                GODumpExt.Init();
-            }
-            if (HaveAssembly("Satchel"))
-            {
-                SatchelExt.Init();
-            }
+            GODumpExt.Init();
+        }
+        if (HaveAssembly("Satchel"))
+        {
+            SatchelExt.Init();
         }
 
         PatchGameObjectControls.Init();
@@ -56,8 +56,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
     public void InitPanel()
     {
 
-        var uibase = typeof(UnityExplorer.UI.UIManager).CreateReflectionObject()
-            ["<UiBase>k__BackingField"].As<UIBase>();
+        var uibase = (UIBase)FindFieldInfo("UnityExplorer.UI.UIManager::<UiBase>k__BackingField").FastGet((object)null);
         var panels = new CustomPanel[]
         {
             new ModPanel(uibase)

@@ -10,7 +10,7 @@
   "DependenciesDir": ".\\Dependencies\\",
   "IgnoreDlls": [],
   "WebDependencies": [
-    "https://github.com/jngo102/UExplorer/releases/latest/download/UExplorer.zip",
+    "https://github.com/HKLab/UExplorer/releases/latest/download/UExplorer.zip",
     "https://github.com/jngo102/HollowKnight.GODump/releases/latest/download/GODump.zip",
     "https://github.com/PrashantMohta/Satchel/releases/latest/download/Satchel.dll"
   ],

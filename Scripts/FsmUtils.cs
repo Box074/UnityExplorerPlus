@@ -3,11 +3,11 @@ namespace UnityExplorerPlusMod;
 
 static class FsmUtils
 {
-    public static FieldInfo FGetEntries =  FindFieldInfo("UnityExplorer.Inspectors.ComponentList::GetEntries")!;
+    public static FieldInfo FGetEntries =  FindFieldInfo("UnityExplorer.UI.Widgets.ComponentList::GetEntries")!;
     public static void Init()
     {
         HookEndpointManager.Add(
-            FindMethodBase("UnityExplorer.Inspectors.ComponentList::SetComponentCell"),
+            FindMethodBase("UnityExplorer.UI.Widgets.ComponentList::SetComponentCell"),
             (Action<ComponentList, ComponentCell, int> orig, ComponentList self, ComponentCell cell, int index) =>
             {
                 orig(self, cell, index);
