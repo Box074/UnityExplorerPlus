@@ -1,23 +1,70 @@
 {
-  "ProjectName": "UnityExplorerPlus",
-  "ModVersion": "0.7.1.0",
-  "CodeDir": ".\\Scripts\\",
-  "EmbeddedResourceDir": ".\\Res\\",
-  "EmbeddedResource": {
-    "prefabMap.json": "UnityExplorerPlus.Prefabs.json"
-  },
-  "Guid": "bf0b224b-7676-4dca-a5f0-52e7acc4e69e",
-  "DependenciesDir": ".\\Dependencies\\",
-  "IgnoreDlls": [],
-  "WebDependencies": [
-    "https://github.com/HKLab/UExplorer/releases/latest/download/UExplorer.zip",
-    "https://github.com/jngo102/HollowKnight.GODump/releases/latest/download/GODump.zip",
-    "https://github.com/PrashantMohta/Satchel/releases/latest/download/Satchel.dll"
-  ],
-  "UseGZip": true,
-  "CreateZip": true,
-  "ZipFiles": {
-    "../README.md": "README.md"
-  },
-  "EnableNullable": false
+    "modName": "UnityExplorerPlus",
+    "modVersion": "0.7.2.0",
+    "codeDir": "./scripts",
+    "csCompileInfo": true,
+    "dependencies": [
+        {
+            "name": "UExplorer",
+            "url": "https://github.com/jngo102/UExplorer/releases/latest/download/UExplorer.zip",
+            "copyToOutput": true
+        },
+        {
+            "name": "Modding API",
+            "url": "https://github.com/hk-modding/api/releases/latest/download/ModdingApiWin.zip",
+            "ignoreFiles": [
+                "MMHOOK_PlayMaker.dll",
+                "Mono.Cecil.dll",
+                "MonoMod.RuntimeDetour.dll",
+                "MonoMod.Utils.dll"
+            ],
+            "copyToOutput": false
+        },
+        {
+            "name": "Vanilla",
+            "url": "https://files.catbox.moe/i4sdl6.zip",
+            "ignoreFiles": [
+                "Assembly-CSharp.dll",
+                "mscorlib.dll",
+                "Newtonsoft.Json.dll"
+            ],
+            "copyToOutput": false
+        },
+        {
+            "name": "GODump",
+            "url": "https://github.com/jngo102/HollowKnight.GODump/releases/latest/download/GODump.zip",
+            "copyToOutput": true
+        },
+        {
+            "name": "Satchel",
+            "url": "https://github.com/PrashantMohta/Satchel/releases/latest/download/Satchel.dll",
+            "copyToOutput": true
+        },
+        {
+            "name": "HKTool",
+            "url": "https://github.com/HKLab/HollowKnightMod.Tool/releases/latest/download/Output.zip",
+            "copyToOutput": true
+        }
+    ],
+    "hktool": {
+        "referenceLib": true,
+        "compressResources": true,
+        "modifyIL": true
+    },
+    "csproj": {
+        "itemGroup": {
+            "name": "ItemGroup",
+            "content": [],
+            "attr": {}
+        },
+        "propertyGroup": {
+            "name": "PropertyGroup",
+            "content": [],
+            "attr": {}
+        }
+    },
+    "enableNullableCheck": false,
+    "resources": {
+        "./Res/prefabMap.json": "UnityExplorerPlus.Prefabs.json"
+    }
 }

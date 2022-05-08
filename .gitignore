@@ -349,9 +349,12 @@ MigrationBackup/
 *.sln
 *.csproj
 
-#Library
-/Library/
-
 #Output
 /Output/
+Output.zip
+Info.txt
 
+#Cache
+/caches/
+projectCache.json
+CompileInfo.cs

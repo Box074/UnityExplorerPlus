@@ -1,4 +1,4 @@
-name: .NET
+name: Build
 
 on: [push, pull_request]
 
@@ -11,18 +11,17 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
-    - name: Download HKToolUtils
+        dotnet-version: 6.0.x
+    - name: NPM Install
       run: |
-        iwr -Uri "https://github.com/HKLab/HKToolUtils/releases/latest/download/net5.zip" -OutFile "HKToolUtils.zip"
-        Expand-Archive -Path HKToolUtils.zip -DestinationPath HKToolUtils
+        npm install
     - name: Build
       run: |
-        dotnet ./HKToolUtils/HKToolUtils.dll buildInGithub . > .\Info.txt
+        npm run build
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
         body_path: Info.txt
         files: |
-          ./Output/UnityExplorerPlus.zip
+          ./Output.zip
 

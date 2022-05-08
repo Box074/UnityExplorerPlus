@@ -18,3 +18,10 @@
 
 1. Allow dumping of UnityEngine.Sprite as png from the UntiyExplorer Inspector panel
 2. Allows dumping PlayMakerFSM from the UntiyExplorer Inspector panel
+
+## How to Build
+
+1. Clone repo
+2. Run `npm install` in the project root directory
+3. Run `npm run proj` to generate `UnityExplorerPlus.csproj`
+4. Run `npm build` to build

@@ -1,0 +1,9 @@
+{
+    "devDependencies": {
+        "hkmod-utils": "^0.1.0"
+    },
+    "scripts": {
+        "build": "hkmod build -CZ true -H256 true > Info.txt",
+        "csproj": "hkmod generateCsproj"
+    }
+}
