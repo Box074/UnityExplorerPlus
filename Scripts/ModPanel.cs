@@ -9,9 +9,8 @@ class ModPanel : CustomPanel, ICellPoolDataSource<ModCell>
     public List<IMod> modCache = new();
     public ScrollPool<ModCell> scrollPool;
     public static Type TModLoader = FindType("Modding.ModLoader")!;
-    public static PropertyInfo FModInstances = TModLoader.GetProperty("ModInstances");
+    public static MethodInfo FModInstances = (MethodInfo) FindMethodBase("Modding.ModLoader::get_ModInstances");
     public static Type TModInstance = FindType("Modding.ModLoader+ModInstance")!;
-    public static FieldInfo FMod = FindFieldInfo("Modding.ModLoader+ModInstance::Mod")!;
     public static Type TModInstanceSet = typeof(HashSet<>).MakeGenericType(TModInstance);
     public static MethodInfo MGetEnumerator = TModInstanceSet.GetMethod("GetEnumerator");
     public ModPanel(UIBase owner) : base(owner) { }
@@ -31,14 +30,15 @@ class ModPanel : CustomPanel, ICellPoolDataSource<ModCell>
         content.GetComponent<VerticalLayoutGroup>().childControlHeight = false;
         //scrollPool.Initialize(this);
         modCache.Clear();
-        var mods = (IEnumerator)MGetEnumerator.Invoke(FModInstances.GetValue(null, null), null);
+        var mods = (IEnumerator)MGetEnumerator.FastInvoke(FModInstances.FastInvoke(null));
         while (mods.MoveNext())
         {
-            var mod = (IMod)FMod.GetValue(mods.Current);
+            var mod = new ModInstance(mods.Current).Mod;
             if (mod == null) continue;
             modCache.Add(mod);
         }
-        typeof(ScrollPool<ModCell>).GetMethod("Initialize").Invoke(scrollPool, new object[] { this, null });
+        scrollPool.Initialize(this);
+        //typeof(ScrollPool<ModCell>).GetMethod("Initialize").Invoke(scrollPool, new object[] { this, null });
         Refresh();
     }
     public override Vector2 DefaultAnchorMin
@@ -58,11 +58,11 @@ class ModPanel : CustomPanel, ICellPoolDataSource<ModCell>
 
     public void Refresh()
     {
-        var mods = (IEnumerator)MGetEnumerator.Invoke(FModInstances.GetValue(null, null), null);
+        var mods = (IEnumerator)MGetEnumerator.FastInvoke(FModInstances.FastInvoke(null));
         modCache.Clear();
         while (mods.MoveNext())
         {
-            var mod = (IMod)FMod.GetValue(mods.Current);
+            var mod = new ModInstance(mods.Current).Mod;
             if (mod == null) continue;
             modCache.Add(mod);
         }

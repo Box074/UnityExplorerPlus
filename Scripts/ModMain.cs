@@ -3,16 +3,12 @@ namespace UnityExplorerPlusMod;
 
 class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 {
-    public static Type MouseInspectorType => typeof(MouseInspector);
-    public static AssetsInfo prefabMap = null;
+    public static AssetsInfo prefabMap = JsonConvert.DeserializeObject<AssetsInfo>(ModRes.PREFAB_INFO);
     public static Dictionary<int, MouseInspectorBase> inspectors = new();
     public static ReflectionObject mouseInspector = null;
-    public readonly static ReflectionObject RTMouseInspactor = MouseInspectorType.CreateReflectionObject();
+    public readonly static ReflectionObject RTMouseInspactor = typeof(MouseInspector).CreateReflectionObject();
     public override void Initialize()
     {
-        prefabMap =
-            JsonConvert.DeserializeObject<AssetsInfo>(
-                System.Text.Encoding.UTF8.GetString(this.GetEmbeddedResource("UnityExplorerPlus.Prefabs.json")));
         Init().StartCoroutine();
     }
     public static void AddInspector(string name, MouseInspectorBase inspector)
@@ -36,8 +32,8 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         //AddInspector("Renderer", new RendererInspector());
         AddInspector("Enemy", new EnemyInspector());
         AddInspector("World Position", new WorldPositionPin());
-        HookEndpointManager.Add(MouseInspectorType.GetMethod("OnDropdownSelect"), PatchOnDropdownSelect);
-        HookEndpointManager.Add(MouseInspectorType.GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
+        On.UnityExplorer.Inspectors.MouseInspector.OnDropdownSelect += PatchOnDropdownSelect;
+        HookEndpointManager.Add(typeof(MouseInspector).GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
 
         FsmUtils.Init();
 
@@ -56,19 +52,16 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
     public void InitPanel()
     {
 
-        var uibase = (UIBase)FindFieldInfo("UnityExplorer.UI.UIManager::<UiBase>k__BackingField").FastGet((object)null);
+        var uibase = GetFieldRef<UIBase>(null, "UnityExplorer.UI.UIManager::<UiBase>k__BackingField");
+        var UIPanels = GetFieldRef<Dictionary<UnityExplorer.UI.UIManager.Panels, UEPanel>>(null, "UnityExplorer.UI.UIManager::UIPanels");
         var panels = new CustomPanel[]
         {
             new ModPanel(uibase)
         };
-        var UIPanels = (Dictionary<UnityExplorer.UI.UIManager.Panels, UEPanel>)typeof(UnityExplorer.UI.UIManager)
-            .GetField("UIPanels", BindingFlags.Static | BindingFlags.NonPublic)
-            .GetValue(null);
-        int id = UIPanels.Count;
+        
         foreach (var v in panels)
         {
-            UIPanels.Add((UnityExplorer.UI.UIManager.Panels)id, v);
-            v.panelType = (UnityExplorer.UI.UIManager.Panels)id;
+            UIPanels.Add((UnityExplorer.UI.UIManager.Panels)v.PanelType, v);
             try
             {
                 UnityExplorer.UI.UIManager.SetPanelActive(v, false);
@@ -77,7 +70,6 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
             {
                 LogError(e);
             }
-            id++;
         }
     }
 
@@ -93,7 +85,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
             return orig(self);
         }
     }
-    public void PatchOnDropdownSelect(Action<int> orig, int index)
+    public void PatchOnDropdownSelect(On.UnityExplorer.Inspectors.MouseInspector.orig_OnDropdownSelect orig, int index)
     {
         if (inspectors.TryGetValue(index, out var insp))
         {

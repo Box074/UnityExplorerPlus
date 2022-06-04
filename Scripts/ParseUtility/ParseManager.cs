@@ -15,24 +15,21 @@ public static class ParseManager
     private static HashSet<string> types = new();
     static ParseManager()
     {
-        HookEndpointManager.Add(
-            FindMethodBase("UnityExplorer.CacheObject.CacheObjectBase::SetDataToCell"),
-            (Action<CacheObjectBase, CacheObjectCell> orig, CacheObjectBase self, CacheObjectCell cell) =>
+        On.UnityExplorer.CacheObject.CacheObjectBase.SetDataToCell += (orig, self, cell) =>
             {
                 orig(self, cell);
-                if(!types.Contains(self.Value?.GetType()?.FullName)) return;
-                M_SetValueState.FastInvoke(self, cell, 
+                if (!types.Contains(self.Value?.GetType()?.FullName)) return;
+                M_SetValueState.FastInvoke(self, cell,
                 new CacheObjectBase.ValueStateArgs(valueRichText: true, inputActive: self.CanWrite, applyActive: self.CanWrite, inspectActive: true));
-            }
-            );
+            };
     }
     public static void Register(Type type, Func<object, string> toString, Func<string, object> parse)
     {
         types.Add(type.FullName);
-        M_customTypes_Add.FastInvoke(F_customTypes.FastGet((object)null), type.FullName, 
+        M_customTypes_Add.FastInvoke(F_customTypes.FastGet((object)null), type.FullName,
             parse.Method.CreateDelegate(DT_ParseMethod, parse.Target)
         );
-        M_customTypesToString_Add.FastInvoke(F_customTypesToString.FastGet((object)null), type.FullName, 
+        M_customTypesToString_Add.FastInvoke(F_customTypesToString.FastGet((object)null), type.FullName,
             toString.Method.CreateDelegate(DT_ToStringMethod, toString.Target)
         );
     }

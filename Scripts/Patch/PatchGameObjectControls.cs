@@ -1,7 +1,7 @@
 
 namespace UnityExplorerPlusMod;
 
-static class PatchGameObjectControls 
+static class PatchGameObjectControls
 {
     public class GOCInfo
     {
@@ -11,27 +11,25 @@ static class PatchGameObjectControls
     public static Dictionary<GameObjectControls, GOCInfo> dict = new();
     public static void Init()
     {
-        HookEndpointManager.Add(
-            FindMethodBase("UnityExplorer.UI.Widgets.GameObjectControls::UpdateGameObjectInfo"),//typeof(GameObjectControls).GetMethod("UpdateGameObjectInfo"),
-            (Action<GameObjectControls, bool, bool> orig, GameObjectControls self, bool firstUpdate, bool force) =>
+        On.UnityExplorer.UI.Widgets.GameObjectControls.UpdateGameObjectInfo += (orig, self, firstUpdate, force) =>
             {
                 orig(self, firstUpdate, force);
                 var go = (GameObject)self.Parent.Target;
-                
+
                 var showExplorerBtn = self.Parent.Content.GetComponentsInChildren<Transform>(true)
                     .FirstOrDefault(x => x.gameObject.name == "ExploreBtn").gameObject;
                 var destroyBtn = self.Parent.Content.GetComponentsInChildren<Transform>(true)
                     .FirstOrDefault(x => x.gameObject.name == "DestroyBtn").gameObject;
                 var cp = showExplorerBtn.transform.parent;
                 var sceneLabel = cp.Find("SceneLabel").gameObject.GetComponent<Text>();
-                
+
                 destroyBtn.SetActive(true);
                 showExplorerBtn.SetActive(true);
                 sceneLabel.text = "Scene:";
                 GOCInfo info;
-                if(!dict.TryGetValue(self, out info)) info = null;
+                if (!dict.TryGetValue(self, out info)) info = null;
                 else info.showPrefabBtn.Component.gameObject.SetActive(false);
-                if(!go.scene.IsValid())
+                if (!go.scene.IsValid())
                 {
                     var root = go.transform.root.gameObject;
                     destroyBtn.SetActive(false);
@@ -41,12 +39,12 @@ static class PatchGameObjectControls
                     var map = UnityExplorerPlus.prefabMap;
                     var componentTable = root.GetComponents<Component>().Select(x => x.GetType().Name).ToArray();
 
-                    if(map.resources.TryGetValue(root.name, out var res) && res.All(x => componentTable.Contains(x)))
+                    if (map.resources.TryGetValue(root.name, out var res) && res.All(x => componentTable.Contains(x)))
                     {
                         text.Text = "resources.assets (Prefab)";
                         return;
                     }
-                    if(map.sharedAssets.TryGetValue(root.name, out var sres) && sres.compoents.All(x => componentTable.Contains(x)))
+                    if (map.sharedAssets.TryGetValue(root.name, out var sres) && sres.compoents.All(x => componentTable.Contains(x)))
                     {
                         text.Text = sres.assetFile + ".assets (Prefab)";
                         return;
@@ -69,17 +67,17 @@ static class PatchGameObjectControls
                             .FirstOrDefault(
                                 x => x.GetComponents<Component>().All(x => cs.Contains(x.GetType().Name))
                             );
-                    if(pb is null)
+                    if (pb is null)
                     {
-                        if(UnityExplorerPlus.prefabMap.resources.TryGetValue(prefabName, out var res)
+                        if (UnityExplorerPlus.prefabMap.resources.TryGetValue(prefabName, out var res)
                             && res.All(x => cs.Contains(x)))
                         {
                             pb = Resources.LoadAll<GameObject>("").FirstOrDefault(x => x.name == prefabName);
                         }
                     }
-                    if(pb is not null)
+                    if (pb is not null)
                     {
-                        if(info is null)
+                        if (info is null)
                         {
                             info = new();
                             var parent = cp.gameObject;
@@ -89,7 +87,7 @@ static class PatchGameObjectControls
                             info.showPrefabBtn.ButtonText.fontSize = 12;
                             info.showPrefabBtn.Component.onClick.AddListener(() =>
                             {
-                                if(info.prefab is not null)
+                                if (info.prefab is not null)
                                 {
                                     InspectorManager.Inspect(info.prefab);
                                 }
@@ -103,10 +101,10 @@ static class PatchGameObjectControls
                         info.prefab = pb;
                         info.showPrefabBtn.Component.gameObject.SetActive(true);
                         //showExplorerBtn.SetActive(false);
-                        
+
                         return;
                     }
                 }
-            });
+            };
     }
 }

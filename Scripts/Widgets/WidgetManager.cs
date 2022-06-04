@@ -17,26 +17,23 @@ static class WidgetManager
     }
     private static void Init()
     {
-        HookEndpointManager.Add(
-            FindMethodBase("UnityExplorer.UI.Widgets.UnityObjectWidget::GetUnityWidget"),
-            (Func<object, Type, ReflectionInspector, UnityObjectWidget> orig,
-                object target, Type targetType, ReflectionInspector inspector) =>
+        On.UnityExplorer.UI.Widgets.UnityObjectWidget.GetUnityWidget += (orig, target, targetType, inspector) =>
+        {
+            try
+            {
+                if (typeMap.TryGetValue(targetType, out var borrow))
                 {
-                    try
-                    {
-                        if (typeMap.TryGetValue(targetType, out var borrow))
-                        {
-                            var r = (UnityObjectWidget)borrow.FastInvoke(null);
-                            r.OnBorrowed(target, targetType, inspector);
-                            return r;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        UnityExplorerPlus.Instance.LogError(e);
-                    }
-                    return orig(target, targetType, inspector);
+                    var r = (UnityObjectWidget)borrow.FastInvoke(null);
+                    r.OnBorrowed(target, targetType, inspector);
+                    return r;
                 }
-            );
+            }
+            catch (Exception e)
+            {
+                UnityExplorerPlus.Instance.LogError(e);
+            }
+            return orig(target, targetType, inspector);
+        };
+
     }
 }

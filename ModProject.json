@@ -1,6 +1,6 @@
 {
     "modName": "UnityExplorerPlus",
-    "modVersion": "0.7.2.0",
+    "modVersion": "0.7.3.0",
     "codeDir": "./scripts",
     "csCompileInfo": true,
     "dependencies": [
@@ -49,7 +49,14 @@
     "hktool": {
         "referenceLib": true,
         "compressResources": true,
-        "modifyIL": true
+        "modifyIL": true,
+        "inlineHook": true,
+        "modRes": {
+            "UnityExplorerPlus.Prefabs.json": {
+                "name": "PREFAB_INFO",
+                "type": "utf8"
+            }
+        }
     },
     "csproj": {
         "itemGroup": {
@@ -66,5 +73,6 @@
     "enableNullableCheck": false,
     "resources": {
         "./Res/prefabMap.json": "UnityExplorerPlus.Prefabs.json"
-    }
+    },
+    "$schema": "https://github.com/HKLab/hkmod-utils/raw/master/schemca/modProject.json"
 }
