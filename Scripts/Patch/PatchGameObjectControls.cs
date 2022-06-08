@@ -35,7 +35,7 @@ static class PatchGameObjectControls
                     destroyBtn.SetActive(false);
                     showExplorerBtn.SetActive(false);
                     sceneLabel.text = "Assets:";
-                    var text = (InputFieldRef)FindFieldInfo("UnityExplorer.UI.Widgets.GameObjectInfoPanel::SceneInput").FastGet(self.GameObjectInfo);
+                    var text = GetFieldRef<InputFieldRef, GameObjectInfoPanel>(self.GameObjectInfo, "SceneInput");
                     var map = UnityExplorerPlus.prefabMap;
                     var componentTable = root.GetComponents<Component>().Select(x => x.GetType().Name).ToArray();
 

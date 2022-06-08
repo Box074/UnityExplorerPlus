@@ -1,6 +1,6 @@
 {
     "modName": "UnityExplorerPlus",
-    "modVersion": "0.7.3.0",
+    "modVersion": "0.7.4.0",
     "codeDir": "./scripts",
     "csCompileInfo": true,
     "dependencies": [
@@ -42,8 +42,7 @@
         },
         {
             "name": "HKTool",
-            "url": "https://github.com/HKLab/HollowKnightMod.Tool/releases/latest/download/Output.zip",
-            "copyToOutput": true
+            "url": "https://github.com/HKLab/HollowKnightMod.Tool/releases/latest/download/Output.zip"
         }
     ],
     "hktool": {

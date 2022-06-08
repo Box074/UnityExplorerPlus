@@ -19,6 +19,7 @@ global using static HKTool.Utils.Compile.ReflectionHelperEx;
 global using HReflectionHelper = HKTool.Reflection.ReflectionHelper;
 
 global using UnityExplorer;
+global using UnityExplorer.ObjectExplorer;
 global using UnityExplorer.CacheObject;
 global using UnityExplorer.CacheObject.Views;
 global using UnityExplorer.Inspectors;

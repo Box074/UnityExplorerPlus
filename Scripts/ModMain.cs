@@ -23,6 +23,8 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
     }
     private IEnumerator Init()
     {
+        PatchReflectionInspector.Init();
+        ReferenceSearch.Init();
         while (UnityExplorer.UI.UIManager.Initializing) yield return null;
 
         mouseInspector = MouseInspector.Instance.CreateReflectionObject();
@@ -36,6 +38,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         HookEndpointManager.Add(typeof(MouseInspector).GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
 
         FsmUtils.Init();
+        
 
         if (HaveAssembly("GODump"))
         {
