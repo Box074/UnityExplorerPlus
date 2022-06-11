@@ -9,6 +9,7 @@ static class PatchGameObjectControls
         public GameObject prefab;
     }
     public static Dictionary<GameObjectControls, GOCInfo> dict = new();
+    public static Dictionary<GameObjectControls, InputFieldRef> assetDict = new();
     public static void Init()
     {
         On.UnityExplorer.UI.Widgets.GameObjectControls.UpdateGameObjectInfo += (orig, self, firstUpdate, force) =>
@@ -22,9 +23,21 @@ static class PatchGameObjectControls
                     .FirstOrDefault(x => x.gameObject.name == "DestroyBtn").gameObject;
                 var cp = showExplorerBtn.transform.parent;
                 var sceneLabel = cp.Find("SceneLabel").gameObject.GetComponent<Text>();
+                var sceneBtn = GetFieldRef<ButtonRef, GameObjectInfoPanel>(self.GameObjectInfo, "SceneButton");
+                var assetText = assetDict.TryGetOrAddValue(self, () =>
+                {
+                    var text = UIFactory.CreateInputField(sceneBtn.GameObject.transform.parent.gameObject, "AssetsFileText", "Not recorded");
+                    UIFactory.SetLayoutElement(text.Component.gameObject, minHeight: 25, minWidth: 120, flexibleWidth: 999);
+                    text.Component.readOnly = true;
+                    text.Component.textComponent.color = new Color(0.7f, 0.7f, 0.7f);
+                    text.Transform.SetSiblingIndex(sceneBtn.Transform.GetSiblingIndex());
+                    return text;
+                });
 
                 destroyBtn.SetActive(true);
                 showExplorerBtn.SetActive(true);
+                sceneBtn.GameObject.SetActive(true);
+                assetText.GameObject.SetActive(false);
                 sceneLabel.text = "Scene:";
                 GOCInfo info;
                 if (!dict.TryGetValue(self, out info)) info = null;
@@ -34,22 +47,23 @@ static class PatchGameObjectControls
                     var root = go.transform.root.gameObject;
                     destroyBtn.SetActive(false);
                     showExplorerBtn.SetActive(false);
+                    assetText.GameObject.SetActive(true);
                     sceneLabel.text = "Assets:";
-                    var text = GetFieldRef<InputFieldRef, GameObjectInfoPanel>(self.GameObjectInfo, "SceneInput");
+                    sceneBtn.GameObject.SetActive(false);
                     var map = UnityExplorerPlus.prefabMap;
                     var componentTable = root.GetComponents<Component>().Select(x => x.GetType().Name).ToArray();
 
                     if (map.resources.TryGetValue(root.name, out var res) && res.All(x => componentTable.Contains(x)))
                     {
-                        text.Text = "resources.assets (Prefab)";
+                        assetText.Text = "resources.assets (Prefab)";
                         return;
                     }
                     if (map.sharedAssets.TryGetValue(root.name, out var sres) && sres.compoents.All(x => componentTable.Contains(x)))
                     {
-                        text.Text = sres.assetFile + ".assets (Prefab)";
+                        assetText.Text = sres.assetFile + ".assets (Prefab)";
                         return;
                     }
-                    text.Text = "Not recorded";
+                    assetText.Text = "Not recorded";
                 }
                 else
                 {

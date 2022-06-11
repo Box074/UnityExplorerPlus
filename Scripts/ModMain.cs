@@ -19,7 +19,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
     }
     public override void OnCheckDependencies()
     {
-        CheckAssembly("UnityExplorer.Standalone.Mono", new Version(4,7,12));
+        CheckAssembly("UnityExplorer.Standalone.Mono", new Version(4,8,2));
     }
     private IEnumerator Init()
     {

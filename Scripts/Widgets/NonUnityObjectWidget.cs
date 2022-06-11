@@ -16,7 +16,7 @@ public class NonUnityObjectWidget : UnityObjectWidget
     }
     public override void OnBorrowed(object target, Type targetType, ReflectionInspector inspector)
     {
-        ParentInspector = inspector;
+        owner = inspector;
         if(UIRoot is null)
         {
             CreateContent(inspector.UIRoot);

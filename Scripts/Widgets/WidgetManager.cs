@@ -7,6 +7,8 @@ static class WidgetManager
     static WidgetManager()
     {
         Init();
+
+        //RegisterType(typeof(tk2dSpriteCollectionData), typeof(Tk2dSpriteDefWidget));
     }
     public static void RegisterType(Type src, Type widget)
     {

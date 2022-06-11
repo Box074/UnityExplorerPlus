@@ -8,7 +8,7 @@ class SpriteWidget : Texture2DWidget
     private Sprite sprite;
     private SpriteAtlas atlas;
     private ButtonRef atlasButton;
-    //public static MethodInfo baseTypeOnBorrowed = typeof(UnityObjectWidget).GetMethod("OnBorrowed", HReflectionHelper.All);
+
     public SpriteWidget()
     {
         texWidget = this.CreateReflectionObject();
@@ -50,9 +50,9 @@ class SpriteWidget : Texture2DWidget
         viewTex.name = sr.name;
         base.OnBorrowed(viewTex, targetType, inspector);
 
-        UnityObjectRef = (UnityEngine.Object)target;
-        nameInput.Text = UnityObjectRef.name;
-        instanceIdInput.Text = UnityObjectRef.GetInstanceID().ToString();
+        unityObject = (UnityEngine.Object)target;
+        nameInput.Text = unityObject.name;
+        instanceIdInput.Text = unityObject.GetInstanceID().ToString();
         gameObjectButton.Component.gameObject.SetActive(false);
     }
 
