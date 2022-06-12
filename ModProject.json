@@ -1,6 +1,6 @@
 {
     "modName": "UnityExplorerPlus",
-    "modVersion": "0.7.5.0",
+    "modVersion": "0.8.0.0",
     "codeDir": "./scripts",
     "csCompileInfo": true,
     "dependencies": [
@@ -29,11 +29,6 @@
                 "Newtonsoft.Json.dll"
             ],
             "copyToOutput": false
-        },
-        {
-            "name": "GODump",
-            "url": "https://github.com/jngo102/HollowKnight.GODump/releases/latest/download/GODump.zip",
-            "copyToOutput": true
         },
         {
             "name": "Satchel",

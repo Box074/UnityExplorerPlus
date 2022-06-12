@@ -12,8 +12,19 @@ class tk2dSpriteWidget : DumpWidgetBase<tk2dSpriteWidget>
             return;
         }
         Directory.CreateDirectory(savePath);
-        GODump.GODump.Instance.LoadSettings();
-        Dump.DumpSpriteInUExplorer(animation, savePath).StartCoroutine();
+        foreach(var v in animation.clips)
+        {
+            var p = Path.Combine(savePath, v.name);
+            Directory.CreateDirectory(p);
+            int i = 0;
+            foreach(var f in v.frames)
+            {
+                var tex = SpriteUtils.ExtractTk2dSprite(f.spriteCollection, f.spriteId);
+                File.WriteAllBytes(Path.Combine(p, v.name + "-" + i.ToString() + ".png"), tex.EncodeToPNG());
+                UnityEngine.Object.Destroy(tex);
+                i++;
+            }
+        }
     }
 
     public override void OnReturnToPool()

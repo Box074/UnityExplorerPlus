@@ -3,88 +3,86 @@ namespace UnityExplorerPlusMod;
 
 class Tk2dSpriteDefWidget : Texture2DWidget
 {
-    public static Camera cacheCamera = null!;
-    public static MeshRenderer cacheMeshR = null!;
-    public static MeshFilter cacheMeshF = null!;
-    public static GameObject cacheHolder = null!;
-    public static tk2dSprite cacheTk2d = null!;
-    public static GameObject rGO = null!;
-    public static Mesh mesh = null!;
-    public static void PrepareCamera()
-    {
-        cacheHolder = new GameObject("UEP tk2d Cache Holder");
-        cacheHolder.transform.position = new Vector3(41563, 46689, 0);
-        cacheHolder.SetActive(false);
-        UnityEngine.Object.DontDestroyOnLoad(cacheHolder);
-
-        var camGO = new GameObject("Cache Camera");
-        camGO.transform.parent = cacheHolder.transform;
-        cacheCamera = camGO.AddComponent<Camera>();
-        cacheCamera.orthographic = true;
-        cacheCamera.clearFlags = CameraClearFlags.Nothing;
-
-        rGO = new GameObject("Cache Renderer");
-        rGO.transform.parent = cacheHolder.transform;
-        rGO.transform.localPosition = new Vector3(0, 0, 0);
-        cacheMeshF = rGO.AddComponent<MeshFilter>();
-        cacheMeshR = rGO.AddComponent<MeshRenderer>();
-    }
-    public static void BuildCamera(tk2dSpriteCollectionData def, int id)
-    {
-        if (cacheHolder == null) PrepareCamera();
-        /*if (mesh == null)
-        {
-            mesh = new();
-            mesh.MarkDynamic();
-            mesh.hideFlags = HideFlags.DontSave;
-            cacheMeshF.mesh = mesh;
-        }
-        mesh.Clear();
-        mesh.vertices = def.positions;
-        mesh.colors = Enumerable.Repeat(Color.white, def.positions.Length).ToArray();
-        mesh.uv = def.uvs;
-        mesh.triangles = def.indices;
-        mesh.bounds = new(def.boundsData[0], def.boundsData[1]);
-
-        
-        cacheMeshR.material = def.materialInst;*/
-
-        if(cacheTk2d == null) cacheTk2d = tk2dSprite.AddComponent(cacheMeshF.gameObject, def, id);
-        cacheTk2d.SetSprite(def, id);
-        //Only Mesh
-        var size = (Vector2)cacheMeshR.bounds.size;
-        cacheCamera.orthographicSize = size.y / 2;
-        cacheCamera.aspect = size.x / size.y;
-        cacheCamera.transform.position = cacheMeshR.bounds.center.With((ref Vector3 x) => x.z = -1);
-    }
-    public static Texture2D Render(tk2dSpriteCollectionData def, int id)
-    {
-        BuildCamera(def, id);
-        var sdef = def.spriteDefinitions[id];
-        var width = (int)((sdef.uvs.Max(x => x.x) - sdef.uvs.Min(x => x.x)) * sdef.material.mainTexture.width) + 1;
-        var height = (int)((sdef.uvs.Max(x => x.y)  - sdef.uvs.Min(x => x.y)) * sdef.material.mainTexture.height) + 1;
-        var rtex = new RenderTexture(width, height, 0);
-        rtex.Create();
-        cacheCamera.targetTexture = rtex;
-        cacheHolder.SetActive(true);
-        cacheCamera.Render();
-        cacheHolder.SetActive(false);
-
-        var tex2d = new Texture2D(width, height);
-        var prev = RenderTexture.active;
-        RenderTexture.active = rtex;
-        tex2d.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-        tex2d.Apply();
-        RenderTexture.active = prev;
-
-        rtex.Release();
-        return tex2d;
-    }
-
+    public InputFieldRef spriteIdInput;
+    public InputFieldRef savePlus;
+    public tk2dSpriteCollectionData collection;
     public override void OnBorrowed(object target, Type targetType, ReflectionInspector inspector)
     {
-        target = Render((tk2dSpriteCollectionData)target, 0);
+        collection = (tk2dSpriteCollectionData)target;
+        target = SpriteUtils.ExtractTk2dSprite(collection, 0);
+        savePlus.Text = Path.Combine(UnityExplorer.Config.ConfigManager.Default_Output_Path.Value, "tk2dSpriteCollectionData-" + collection.name);
         base.OnBorrowed(target, typeof(Texture2D), inspector);
+        unityObject = collection;
+        instanceIdInput.Text = collection.GetInstanceID().ToString();
+    }
+    public override GameObject CreateContent(GameObject uiRoot)
+    {
+        var ret = base.CreateContent(uiRoot);
+
+        var saveRow = UIFactory.CreateHorizontalGroup(GetFieldRef<GameObject, Texture2DWidget>(this, "textureViewerRoot"), "SpriteSaveRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
+        saveRow.transform.SetSiblingIndex(1);
+        UIFactory.SetLayoutElement(saveRow, minHeight: 30, flexibleWidth: 9999);
+
+        Text saveLabel = UIFactory.CreateLabel(saveRow, "SpriteSaveLabel", "Save All:");
+        UIFactory.SetLayoutElement(saveLabel.gameObject, minWidth: 75, minHeight: 25);
+
+        savePlus = UIFactory.CreateInputField(saveRow, "SpriteSaveInput", "...");
+        UIFactory.SetLayoutElement(savePlus.UIRoot, minHeight: 25, flexibleHeight: 0, flexibleWidth: 9999);
+
+        ButtonRef saveBtn = UIFactory.CreateButton(saveRow, "SaveButton", "Save Folder", new Color(0.2f, 0.25f, 0.2f));
+        UIFactory.SetLayoutElement(saveBtn.Component.gameObject, minHeight: 25, minWidth: 100, flexibleWidth: 0);
+        saveBtn.OnClick += () =>
+        {
+            var sp = savePlus.Text;
+            if (string.IsNullOrEmpty(sp))
+            {
+                ExplorerCore.LogWarning("Save path cannot be empty!");
+                return;
+            }
+            Directory.CreateDirectory(sp);
+            for (int i = 0; i < collection.spriteDefinitions.Length; i++)
+            {
+                var name = collection.spriteDefinitions[i].name;
+                var tex = SpriteUtils.ExtractTk2dSprite(collection, i);
+                File.WriteAllBytes(Path.Combine(sp, name + ".png"), tex.EncodeToPNG());
+                UnityEngine.Object.Destroy(tex);
+            }
+        };
+
+        
+        var idRow = UIFactory.CreateHorizontalGroup(GetFieldRef<GameObject, Texture2DWidget>(this, "textureViewerRoot").transform.GetChild(0).gameObject,
+            "SpriteIDRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
+        idRow.transform.SetAsFirstSibling();
+        UIFactory.SetLayoutElement(idRow, minHeight: 30, flexibleWidth: 9999);
+
+        Text spriteIdLabel = UIFactory.CreateLabel(idRow, "SpriteIDLabel", "SpriteId:");
+        UIFactory.SetLayoutElement(spriteIdLabel.gameObject, minWidth: 75, minHeight: 25);
+
+        spriteIdInput = UIFactory.CreateInputField(idRow, "SpriteIDInput", "e.g. 0");
+        UIFactory.SetLayoutElement(spriteIdInput.UIRoot, minHeight: 25, minWidth: 75, flexibleWidth: 250);
+        spriteIdInput.Component.GetOnEndEdit().AddListener(val =>
+        {
+            if (!int.TryParse(val, out var id)) return;
+            if (id < 0)
+            {
+                id = 0;
+                spriteIdInput.Text = "0";
+            }
+            if (id >= collection.spriteDefinitions.Length)
+            {
+                id = collection.spriteDefinitions.Length - 1;
+                spriteIdInput.Text = id.ToString();
+            }
+            var tex = SpriteUtils.ExtractTk2dSprite(collection, id);
+            tex.name = collection.spriteDefinitions[id].name;
+            GetFieldRef<Texture2D, Texture2DWidget>(this, "texture") = tex;
+            FindMethodBase("UnityExplorer.UI.Widgets.Texture2DWidget::SetupTextureViewer").Invoke(this, new object[0]);
+            RuntimeHelper.StartCoroutine(
+                (IEnumerator)FindMethodBase("UnityExplorer.UI.Widgets.Texture2DWidget::SetImageSizeCoro").Invoke(this, new object[0])
+            );
+        });
+
+        return ret;
     }
 }
 

@@ -45,7 +45,8 @@ global using HutongGames.PlayMaker.Actions;
 
 global using Newtonsoft.Json;
 
-global using GODump;
 global using Satchel;
+
+global using SpriteUtils = HKTool.Utils.SpriteUtils;
 
 

@@ -39,11 +39,6 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 
         FsmUtils.Init();
         
-
-        if (HaveAssembly("GODump"))
-        {
-            GODumpExt.Init();
-        }
         if (HaveAssembly("Satchel"))
         {
             SatchelExt.Init();
