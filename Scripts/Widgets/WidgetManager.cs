@@ -34,6 +34,10 @@ static class WidgetManager
                     r.OnBorrowed(target, targetType, inspector);
                     return r;
                 }
+                if(target is Renderer renderer)
+                {
+                    return  Pool<RendererWidget>.Borrow().With(x => x.OnBorrowed(target, targetType, inspector));
+                }
             }
             catch (Exception e)
             {

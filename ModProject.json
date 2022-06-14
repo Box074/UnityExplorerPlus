@@ -1,6 +1,6 @@
 {
     "modName": "UnityExplorerPlus",
-    "modVersion": "0.8.0.0",
+    "modVersion": "0.8.1.0",
     "codeDir": "./scripts",
     "csCompileInfo": true,
     "dependencies": [
@@ -45,6 +45,7 @@
         "compressResources": true,
         "modifyIL": true,
         "inlineHook": true,
+        "externRes": true,
         "modRes": {
             "UnityExplorerPlus.Prefabs.json": {
                 "name": "PREFAB_INFO",
