@@ -91,11 +91,42 @@ class tk2dClipDumpWidget : Texture2DWidget
     }
     private void SetTex(Texture2D tex)
     {
-        GetFieldRef<Texture2D, Texture2DWidget>(this, "texture") = tex;
-        FindMethodBase("UnityExplorer.UI.Widgets.Texture2DWidget::SetupTextureViewer").Invoke(this, new object[0]);
-        RuntimeHelper.StartCoroutine(
-            (IEnumerator)FindMethodBase("UnityExplorer.UI.Widgets.Texture2DWidget::SetImageSizeCoro").Invoke(this, new object[0])
-        );
+        this.private_texture() = tex;
+        this.SetupTextureViewer();
+        SetImageSize(tex);
+    }
+    private void SetImageSize(Texture2D prevTex)
+    {
+        RectTransform imageRect = InspectorPanel.Instance.Rect;
+        var imageLayout = this.private_imageLayout();
+
+        float rectWidth = imageRect.rect.width - 25;
+        float rectHeight = imageRect.rect.height - 196;
+
+        // If our image is smaller than the viewport, just use 100% scaling
+        if (prevTex.width < rectWidth && prevTex.height < rectHeight)
+        {
+            imageLayout.minWidth = prevTex.width;
+            imageLayout.minHeight = prevTex.height;
+        }
+        else // we will need to scale down the image to fit
+        {
+            // get the ratio of our viewport dimensions to width and height
+            float viewWidthRatio = (float)((decimal)rectWidth / (decimal)prevTex.width);
+            float viewHeightRatio = (float)((decimal)rectHeight / (decimal)prevTex.height);
+
+            // if width needs to be scaled more than height
+            if (viewWidthRatio < viewHeightRatio)
+            {
+                imageLayout.minWidth = prevTex.width * viewWidthRatio;
+                imageLayout.minHeight = prevTex.height * viewWidthRatio;
+            }
+            else // if height needs to be scaled more than width
+            {
+                imageLayout.minWidth = prevTex.width * viewHeightRatio;
+                imageLayout.minHeight = prevTex.height * viewHeightRatio;
+            }
+        }
     }
     private IEnumerator PlayClipCoroutine()
     {

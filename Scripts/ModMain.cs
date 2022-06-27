@@ -5,8 +5,6 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 {
     public static AssetsInfo prefabMap = JsonConvert.DeserializeObject<AssetsInfo>(ModRes.PREFAB_INFO);
     public static Dictionary<int, MouseInspectorBase> inspectors = new();
-    public static ReflectionObject mouseInspector = null;
-    public readonly static ReflectionObject RTMouseInspactor = typeof(MouseInspector).CreateReflectionObject();
     public override void Initialize()
     {
         Init().StartCoroutine();
@@ -26,8 +24,6 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         PatchReflectionInspector.Init();
         ReferenceSearch.Init();
         while (UnityExplorer.UI.UIManager.Initializing) yield return null;
-
-        mouseInspector = MouseInspector.Instance.CreateReflectionObject();
 
         InitPanel();
 
@@ -49,9 +45,8 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 
     public void InitPanel()
     {
-
-        var uibase = GetFieldRef<UIBase>(null, "UnityExplorer.UI.UIManager::<UiBase>k__BackingField");
-        var UIPanels = GetFieldRef<Dictionary<UnityExplorer.UI.UIManager.Panels, UEPanel>>(null, "UnityExplorer.UI.UIManager::UIPanels");
+        var uibase = UnityExplorer.UI.StaticUIManager.get_UiBase();
+        var UIPanels = UnityExplorer.UI.StaticUIManager.private_UIPanels();
         var panels = new CustomPanel[]
         {
             new ModPanel(uibase)
@@ -74,7 +69,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
     public MouseInspectorBase Patch_get_CurrentInspector(Func<object, MouseInspectorBase> orig,
         object self)
     {
-        if (inspectors.TryGetValue((int)RTMouseInspactor["Mode"].As<MouseInspectMode>(), out var insp))
+        if (inspectors.TryGetValue((int)MouseInspector.Mode, out var insp))
         {
             return insp;
         }
@@ -88,7 +83,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         if (inspectors.TryGetValue(index, out var insp))
         {
             InspectorPanel.Instance.MouseInspectDropdown.value = 0;
-            mouseInspector.InvokeMethod("StartInspect", (MouseInspectMode)index);
+            MouseInspector.Instance.StartInspect((MouseInspectMode)index);
         }
         else
         {

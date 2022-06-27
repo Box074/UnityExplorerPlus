@@ -15,11 +15,44 @@ class Tk2dSpriteDefWidget : Texture2DWidget
         unityObject = collection;
         instanceIdInput.Text = collection.GetInstanceID().ToString();
     }
+    private void SetImageSize(Texture2D prevTex)
+    {
+        RectTransform imageRect = InspectorPanel.Instance.Rect;
+        var imageLayout = this.private_imageLayout();
+
+        float rectWidth = imageRect.rect.width - 25;
+        float rectHeight = imageRect.rect.height - 196;
+
+        // If our image is smaller than the viewport, just use 100% scaling
+        if (prevTex.width < rectWidth && prevTex.height < rectHeight)
+        {
+            imageLayout.minWidth = prevTex.width;
+            imageLayout.minHeight = prevTex.height;
+        }
+        else // we will need to scale down the image to fit
+        {
+            // get the ratio of our viewport dimensions to width and height
+            float viewWidthRatio = (float)((decimal)rectWidth / (decimal)prevTex.width);
+            float viewHeightRatio = (float)((decimal)rectHeight / (decimal)prevTex.height);
+
+            // if width needs to be scaled more than height
+            if (viewWidthRatio < viewHeightRatio)
+            {
+                imageLayout.minWidth = prevTex.width * viewWidthRatio;
+                imageLayout.minHeight = prevTex.height * viewWidthRatio;
+            }
+            else // if height needs to be scaled more than width
+            {
+                imageLayout.minWidth = prevTex.width * viewHeightRatio;
+                imageLayout.minHeight = prevTex.height * viewHeightRatio;
+            }
+        }
+    }
     public override GameObject CreateContent(GameObject uiRoot)
     {
         var ret = base.CreateContent(uiRoot);
 
-        var saveRow = UIFactory.CreateHorizontalGroup(GetFieldRef<GameObject, Texture2DWidget>(this, "textureViewerRoot"), "SpriteSaveRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
+        var saveRow = UIFactory.CreateHorizontalGroup(this.private_textureViewerRoot(), "SpriteSaveRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
         saveRow.transform.SetSiblingIndex(1);
         UIFactory.SetLayoutElement(saveRow, minHeight: 30, flexibleWidth: 9999);
 
@@ -50,7 +83,7 @@ class Tk2dSpriteDefWidget : Texture2DWidget
         };
 
         
-        var idRow = UIFactory.CreateHorizontalGroup(GetFieldRef<GameObject, Texture2DWidget>(this, "textureViewerRoot").transform.GetChild(0).gameObject,
+        var idRow = UIFactory.CreateHorizontalGroup(this.private_textureViewerRoot().transform.GetChild(0).gameObject,
             "SpriteIDRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
         idRow.transform.SetAsFirstSibling();
         UIFactory.SetLayoutElement(idRow, minHeight: 30, flexibleWidth: 9999);
@@ -75,11 +108,9 @@ class Tk2dSpriteDefWidget : Texture2DWidget
             }
             var tex = SpriteUtils.ExtractTk2dSprite(collection, id);
             tex.name = collection.spriteDefinitions[id].name;
-            GetFieldRef<Texture2D, Texture2DWidget>(this, "texture") = tex;
-            FindMethodBase("UnityExplorer.UI.Widgets.Texture2DWidget::SetupTextureViewer").Invoke(this, new object[0]);
-            RuntimeHelper.StartCoroutine(
-                (IEnumerator)FindMethodBase("UnityExplorer.UI.Widgets.Texture2DWidget::SetImageSizeCoro").Invoke(this, new object[0])
-            );
+            this.private_texture() = tex;
+            this.SetupTextureViewer();
+            SetImageSize(tex);
         });
 
         return ret;

@@ -4,10 +4,8 @@ namespace UnityExplorerPlusMod;
 class EnemyInspector : MouseInspectorBase
 {
     public GameObject lastHit = null;
-    public static Text objNameLabel =>
-        UnityExplorerPlus.mouseInspector["objNameLabel"].As<Text>();
-    public static Text objPathLabel =>
-        UnityExplorerPlus.mouseInspector["objPathLabel"].As<Text>();
+    public static Text objNameLabel => MouseInspector.Instance.private_objNameLabel();
+    public static Text objPathLabel => MouseInspector.Instance.private_objPathLabel();
     public override void OnBeginMouseInspect()
     {
         lastHit = null;
@@ -20,8 +18,7 @@ class EnemyInspector : MouseInspectorBase
     {
         if (go == null)
         {
-            UnityExplorerPlus.mouseInspector.InvokeMethod("ClearHitData");
-            //WorldInspectPatch.methodInfo_ClearHitData.FastInvoke(MouseInspector.Instance);
+            MouseInspector.Instance.ClearHitData();
             return;
         }
         objNameLabel.text = "<b>Click to Inspect:</b> <color=cyan>" + go.name + "</color>";
@@ -36,7 +33,7 @@ class EnemyInspector : MouseInspectorBase
         var cam = Camera.main;
         if (cam == null)
         {
-            UnityExplorerPlus.mouseInspector.InvokeMethod("StopInspect");
+            MouseInspector.Instance.StopInspect();
             return;
         }
         var mousePos = Input.mousePosition;

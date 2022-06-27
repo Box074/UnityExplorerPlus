@@ -19,8 +19,7 @@ public static class ParseManager
             {
                 orig(self, cell);
                 if (!types.Contains(self.Value?.GetType()?.FullName)) return;
-                M_SetValueState.FastInvoke(self, cell,
-                new CacheObjectBase.ValueStateArgs(valueRichText: true, inputActive: self.CanWrite, applyActive: self.CanWrite, inspectActive: true));
+                self.direct_SetValueState(cell, new(valueRichText: true, inputActive: self.CanWrite, applyActive: self.CanWrite, inspectActive: true));
             };
     }
     public static void Register(Type type, Func<object, string> toString, Func<string, object> parse)

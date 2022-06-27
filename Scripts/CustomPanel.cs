@@ -8,12 +8,8 @@ abstract class CustomPanel : UEPanel
 
     }
     internal UnityExplorer.UI.UIManager.Panels panelType = (UnityExplorer.UI.UIManager.Panels)id++;
-    private static int id = 10;
+    private static int id = 100;
     public override UnityExplorer.UI.UIManager.Panels PanelType => panelType;
     public override bool ShouldSaveActiveState => true;
     public override bool ShowByDefault => true;
-    public override void ApplySaveData()
-    {
-
-    }
 }

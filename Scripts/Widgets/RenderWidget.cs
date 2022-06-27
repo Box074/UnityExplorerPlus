@@ -17,6 +17,7 @@ class RendererWidget : Texture2DWidget
         ResetSize();
         target = renderer.gameObject.Render(width, height);
         base.OnBorrowed(target, typeof(Texture2D), inspector);
+        ((UnityObjectWidget)this).direct_OnBorrowed(target, targetType, inspector);
         unityObject = t;
         instanceIdInput.Text = t.GetInstanceID().ToString();
 
@@ -33,7 +34,8 @@ class RendererWidget : Texture2DWidget
         if (prevTex != null) UnityEngine.Object.Destroy(prevTex);
         prevTex = renderer.gameObject.Render(width, height, includeChildren);
         GetFieldRef<Texture2D, Texture2DWidget>(this, "texture") = prevTex;
-        FindMethodBase("UnityExplorer.UI.Widgets.Texture2DWidget::SetupTextureViewer").Invoke(this, new object[0]);
+        this.SetupTextureViewer();
+        //FindMethodBase("UnityExplorer.UI.Widgets.Texture2DWidget::SetupTextureViewer").Invoke(this, new object[0]);
         SetImageSize();
     }
     private IEnumerator Refresh()
@@ -50,7 +52,7 @@ class RendererWidget : Texture2DWidget
     private void SetImageSize()
     {
         RectTransform imageRect = InspectorPanel.Instance.Rect;
-        var imageLayout = GetFieldRef<LayoutElement, Texture2DWidget>(this, "imageLayout");
+        var imageLayout = this.private_imageLayout();
 
         float rectWidth = imageRect.rect.width - 25;
         float rectHeight = imageRect.rect.height - 196;

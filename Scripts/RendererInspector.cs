@@ -6,10 +6,8 @@ class RendererInspector : MouseInspectorBase
     public GameObject lastHit = null;
     public Renderer[] rendererCache = null;
     public float cacheTime = 0;
-    public static Text objNameLabel =>
-        UnityExplorerPlus.mouseInspector["objNameLabel"].As<Text>();
-    public static Text objPathLabel =>
-        UnityExplorerPlus.mouseInspector["objPathLabel"].As<Text>();
+    public static Text objNameLabel => MouseInspector.Instance.private_objNameLabel();
+    public static Text objPathLabel => MouseInspector.Instance.private_objPathLabel();
     public override void OnEndInspect()
     {
         cacheTime = 0;
@@ -34,7 +32,7 @@ class RendererInspector : MouseInspectorBase
     {
         if(go == null)
         {
-            UnityExplorerPlus.mouseInspector.InvokeMethod("ClearHitData");
+            MouseInspector.Instance.ClearHitData();
             return;
         }
         objNameLabel.text = "<b>Click to Inspect:</b> <color=cyan>" + go.name + "</color>";
@@ -60,7 +58,7 @@ class RendererInspector : MouseInspectorBase
         var cam = Camera.main;
         if (cam == null)
         {
-            UnityExplorerPlus.mouseInspector.InvokeMethod("StopInspect");
+            MouseInspector.Instance.StopInspect();
             return;
         }
         var mousePos = Input.mousePosition;
