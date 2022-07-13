@@ -19,7 +19,7 @@ class tk2dSpriteWidget : DumpWidgetBase<tk2dSpriteWidget>
             int i = 0;
             foreach(var f in v.frames)
             {
-                var tex = SpriteUtils.ExtractTk2dSprite(f.spriteCollection, f.spriteId);
+                var tex = Utils.ExtractTk2dSprite(f.spriteCollection, f.spriteId);
                 File.WriteAllBytes(Path.Combine(p, v.name + "-" + i.ToString() + ".png"), tex.EncodeToPNG());
                 UnityEngine.Object.Destroy(tex);
                 i++;

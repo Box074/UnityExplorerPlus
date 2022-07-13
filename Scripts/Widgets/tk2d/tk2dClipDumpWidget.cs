@@ -12,8 +12,8 @@ class tk2dClipDumpWidget : Texture2DWidget
     public override GameObject CreateContent(GameObject uiRoot)
     {
         var ret = base.CreateContent(uiRoot);
-        GetFieldRef<InputFieldRef, Texture2DWidget>(this, "savePathInput").Transform.parent.gameObject.SetActive(false);
-        GameObject playerRow = UIFactory.CreateHorizontalGroup(GetFieldRef<GameObject, Texture2DWidget>(this, "textureViewerRoot"), "PlayerWidget", false, false, true, true,
+        this.private_savePathInput().Transform.parent.gameObject.SetActive(false);
+        GameObject playerRow = UIFactory.CreateHorizontalGroup(this.private_textureViewerRoot(), "PlayerWidget", false, false, true, true,
                 spacing: 5, padding: new() { x = 3f, w = 3f, y = 3f, z = 3f });
         playerRow.transform.SetAsFirstSibling();
 
@@ -26,7 +26,7 @@ class tk2dClipDumpWidget : Texture2DWidget
 
 
 
-        var saveRow = UIFactory.CreateHorizontalGroup(GetFieldRef<GameObject, Texture2DWidget>(this, "textureViewerRoot"), "SpriteSaveRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
+        var saveRow = UIFactory.CreateHorizontalGroup(this.private_textureViewerRoot(), "SpriteSaveRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
         saveRow.transform.SetSiblingIndex(1);
         UIFactory.SetLayoutElement(saveRow, minHeight: 30, flexibleWidth: 9999);
 
@@ -50,7 +50,7 @@ class tk2dClipDumpWidget : Texture2DWidget
             int i = 0;
             foreach (var v in clip.frames)
             {
-                var tex = SpriteUtils.ExtractTk2dSprite(v.spriteCollection, v.spriteId);
+                var tex = Utils.ExtractTk2dSprite(v.spriteCollection, v.spriteId);
                 File.WriteAllBytes(Path.Combine(sp, clip.name + "-" + i.ToString() + ".png"), tex.EncodeToPNG());
                 UnityEngine.Object.Destroy(tex);
                 i++;
@@ -86,7 +86,7 @@ class tk2dClipDumpWidget : Texture2DWidget
     }
     private void SetTex(tk2dSpriteCollectionData col, int id)
     {
-        var tex = SpriteUtils.ExtractTk2dSprite(col, id);
+        var tex = Utils.ExtractTk2dSprite(col, id);
         SetTex(tex);
     }
     private void SetTex(Texture2D tex)
@@ -140,7 +140,7 @@ class tk2dClipDumpWidget : Texture2DWidget
             foreach (var v in clip.frames)
             {
                 if(prevTex != null) UnityEngine.Object.Destroy(prevTex);
-                prevTex = SpriteUtils.ExtractTk2dSprite(v.spriteCollection, v.spriteId);
+                prevTex = Utils.ExtractTk2dSprite(v.spriteCollection, v.spriteId);
                 SetTex(prevTex);
                 var fst = Time.unscaledTime;
                 while (Time.unscaledTime - fst <= ws)
@@ -186,8 +186,10 @@ class tk2dClipDumpWidget : Texture2DWidget
     public override void OnBorrowed(object target, Type targetType, ReflectionInspector inspector)
     {
         clip = (tk2dSpriteAnimationClip)target;
-        target = SpriteUtils.ExtractTk2dSprite(clip.frames[0].spriteCollection, clip.frames[0].spriteId);
+        target = Utils.ExtractTk2dSprite(clip.frames[0].spriteCollection, clip.frames[0].spriteId);
         base.OnBorrowed(target, targetType, inspector);
+        instanceIdInput.Component.gameObject.SetActive(false);
+        unityObject = null;
         savePlus.Text = Path.Combine(UnityExplorer.Config.ConfigManager.Default_Output_Path.Value, "tk2dSpriteAnimationClip-" + clip.name);
         ResetProgressLabel();
     }

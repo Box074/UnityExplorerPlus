@@ -4,6 +4,7 @@
     },
     "scripts": {
         "build": "hkmod build -CZ -H256 > Info.txt",
-        "csproj": "hkmod generateCsproj"
+        "csproj": "hkmod generateCsproj",
+        "debug": "hkmod build -debug & hkmod modlog --autoExit"
     }
 }

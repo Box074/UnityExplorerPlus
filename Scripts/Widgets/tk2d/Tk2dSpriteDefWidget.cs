@@ -9,7 +9,7 @@ class Tk2dSpriteDefWidget : Texture2DWidget
     public override void OnBorrowed(object target, Type targetType, ReflectionInspector inspector)
     {
         collection = (tk2dSpriteCollectionData)target;
-        target = SpriteUtils.ExtractTk2dSprite(collection, 0);
+        target = Utils.ExtractTk2dSprite(collection, 0);
         savePlus.Text = Path.Combine(UnityExplorer.Config.ConfigManager.Default_Output_Path.Value, "tk2dSpriteCollectionData-" + collection.name);
         base.OnBorrowed(target, typeof(Texture2D), inspector);
         unityObject = collection;
@@ -76,7 +76,7 @@ class Tk2dSpriteDefWidget : Texture2DWidget
             for (int i = 0; i < collection.spriteDefinitions.Length; i++)
             {
                 var name = collection.spriteDefinitions[i].name;
-                var tex = SpriteUtils.ExtractTk2dSprite(collection, i);
+                var tex = Utils.ExtractTk2dSprite(collection, i);
                 File.WriteAllBytes(Path.Combine(sp, name + ".png"), tex.EncodeToPNG());
                 UnityEngine.Object.Destroy(tex);
             }
@@ -106,7 +106,7 @@ class Tk2dSpriteDefWidget : Texture2DWidget
                 id = collection.spriteDefinitions.Length - 1;
                 spriteIdInput.Text = id.ToString();
             }
-            var tex = SpriteUtils.ExtractTk2dSprite(collection, id);
+            var tex = Utils.ExtractTk2dSprite(collection, id);
             tex.name = collection.spriteDefinitions[id].name;
             this.private_texture() = tex;
             this.SetupTextureViewer();

@@ -9,7 +9,6 @@ class RendererWidget : Texture2DWidget
     private int height = 1024;
     private Texture2D prevTex = null;
     private bool autoRefresh = false;
-    private bool includeChildren = false;
     public override void OnBorrowed(object target, Type targetType, ReflectionInspector inspector)
     {
         renderer = (Renderer)target;
@@ -17,10 +16,11 @@ class RendererWidget : Texture2DWidget
         ResetSize();
         target = renderer.gameObject.Render(width, height);
         base.OnBorrowed(target, typeof(Texture2D), inspector);
-        ((UnityObjectWidget)this).direct_OnBorrowed(target, targetType, inspector);
         unityObject = t;
-        instanceIdInput.Text = t.GetInstanceID().ToString();
-
+        this.private_nameInput().Text = this.unityObject.name;
+        this.private_instanceIdInput().Text = this.unityObject.GetInstanceID().ToString();
+        this.component = renderer;
+        this.private_gameObjectButton().Component.gameObject.SetActive(true);
         refreshCor = RuntimeHelper.StartCoroutine(Refresh());
     }
     private void ResetSize()
@@ -32,7 +32,7 @@ class RendererWidget : Texture2DWidget
     {
         ResetSize();
         if (prevTex != null) UnityEngine.Object.Destroy(prevTex);
-        prevTex = renderer.gameObject.Render(width, height, includeChildren);
+        prevTex = renderer.gameObject.Render(width, height, false);
         GetFieldRef<Texture2D, Texture2DWidget>(this, "texture") = prevTex;
         this.SetupTextureViewer();
         //FindMethodBase("UnityExplorer.UI.Widgets.Texture2DWidget::SetupTextureViewer").Invoke(this, new object[0]);
@@ -114,16 +114,6 @@ class RendererWidget : Texture2DWidget
             autoRefresh = val;
         });
         o_toggle.isOn = false;
-
-        var toggle0 = UIFactory.CreateToggle(saveRow, "IncludeChildren", out var o_toggle0, out var text0);
-        UIFactory.SetLayoutElement(toggle0, minHeight: 25, minWidth: 150, flexibleWidth: 99999);
-        toggle0.transform.SetAsLastSibling();
-        text0.text = "Include Children";
-        o_toggle0.onValueChanged.AddListener(val =>
-        {
-            includeChildren = val;
-        });
-        o_toggle0.isOn = false;
 
         return ret;
     }

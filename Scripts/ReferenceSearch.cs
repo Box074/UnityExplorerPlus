@@ -172,6 +172,18 @@ static class ReferenceSearch
             };
             return result;
         };
+        On.UnityExplorer.UI.Widgets.UnityObjectWidget.OnBorrowed += (orig, self, obj, type, inspector) =>
+        {
+            orig(self, obj, type, inspector);
+            if(!type.IsSubclassOf(typeof(UnityEngine.Object)))
+            {
+                self.UIRoot.FindGameObjectInChildren("RefButton")?.SetActive(false);
+            }
+            else
+            {
+                self.UIRoot.FindGameObjectInChildren("RefButton")?.SetActive(true);
+            }
+        };
     }
     public enum RefFilterMode
     {
