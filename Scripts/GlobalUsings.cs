@@ -6,6 +6,8 @@ global using System.Collections.Generic;
 global using System.Reflection;
 global using System.Linq;
 global using System.Text;
+global using System.Threading;
+global using System.Diagnostics;
 global using Modding;
 global using Modding.Converters;
 global using UnityEngine;
@@ -44,8 +46,7 @@ global using HutongGames.PlayMaker;
 global using HutongGames.PlayMaker.Actions;
 
 global using Newtonsoft.Json;
-
-global using Satchel;
+global using Newtonsoft.Json.Serialization;
 
 global using SpriteUtils = HKTool.Utils.SpriteUtils;
 

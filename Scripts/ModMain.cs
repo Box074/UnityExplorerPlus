@@ -32,13 +32,8 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         AddInspector("World Position", new WorldPositionPin());
         On.UnityExplorer.Inspectors.MouseInspector.OnDropdownSelect += PatchOnDropdownSelect;
         HookEndpointManager.Add(typeof(MouseInspector).GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
-
+        WidgetManager.Init();
         FsmUtils.Init();
-        
-        if (HaveAssembly("Satchel"))
-        {
-            SatchelExt.Init();
-        }
 
         PatchGameObjectControls.Init();
     }

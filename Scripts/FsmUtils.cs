@@ -37,7 +37,7 @@ static class FsmUtils
                 }
                 if (value is NamedVariable v)
                 {
-                    return $"<color=grey>Fsm Variable(</color><color=green>{v.VariableType.ToString()}</color><color=grey>): </color><color=green>{v.Name}</color>";
+                    return $"<color=grey>Fsm Variable(</color><color=green>{v.VariableType.ToString()}</color><color=grey>): </color><color=green>{v.Name}</color> | " + v.RawValue?.ToString();
                 }
                 return orig(value, fallbackType, includeNamespace);
             };

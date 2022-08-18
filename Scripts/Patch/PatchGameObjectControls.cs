@@ -10,6 +10,21 @@ static class PatchGameObjectControls
     }
     public static Dictionary<GameObjectControls, GOCInfo> dict = new();
     public static Dictionary<GameObjectControls, InputFieldRef> assetDict = new();
+    public static string GetPrefabFile(GameObject go)
+    {
+        var root = go.transform.root.gameObject;
+        var map = UnityExplorerPlus.prefabMap;
+        var componentTable = root.GetComponents<Component>().Select(x => x.GetType().Name).ToArray();
+        if (map.resources.TryGetValue(root.name, out var res) && res.All(x => componentTable.Contains(x)))
+        {
+            return "resources.assets";
+        }
+        if (map.sharedAssets.TryGetValue(root.name, out var sres) && sres.compoents.All(x => componentTable.Contains(x)))
+        {
+            return sres.assetFile + ".assets";
+        }
+        return "Not recorded";
+    }
     public static void Init()
     {
         On.UnityExplorer.UI.Widgets.GameObjectControls.UpdateGameObjectInfo += (orig, self, firstUpdate, force) =>
@@ -50,20 +65,7 @@ static class PatchGameObjectControls
                     assetText.GameObject.SetActive(true);
                     sceneLabel.text = "Assets:";
                     sceneBtn.GameObject.SetActive(false);
-                    var map = UnityExplorerPlus.prefabMap;
-                    var componentTable = root.GetComponents<Component>().Select(x => x.GetType().Name).ToArray();
-
-                    if (map.resources.TryGetValue(root.name, out var res) && res.All(x => componentTable.Contains(x)))
-                    {
-                        assetText.Text = "resources.assets (Prefab)";
-                        return;
-                    }
-                    if (map.sharedAssets.TryGetValue(root.name, out var sres) && sres.compoents.All(x => componentTable.Contains(x)))
-                    {
-                        assetText.Text = sres.assetFile + ".assets (Prefab)";
-                        return;
-                    }
-                    assetText.Text = "Not recorded";
+                    assetText.Text = GetPrefabFile(root);
                 }
                 else
                 {

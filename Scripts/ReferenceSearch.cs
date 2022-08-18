@@ -177,11 +177,11 @@ static class ReferenceSearch
             orig(self, obj, type, inspector);
             if(!type.IsSubclassOf(typeof(UnityEngine.Object)))
             {
-                self.UIRoot.FindGameObjectInChildren("RefButton")?.SetActive(false);
+                self.UIRoot.FindChildWithPath("RefButton")?.SetActive(false);
             }
             else
             {
-                self.UIRoot.FindGameObjectInChildren("RefButton")?.SetActive(true);
+                self.UIRoot.FindChildWithPath("RefButton")?.SetActive(true);
             }
         };
     }

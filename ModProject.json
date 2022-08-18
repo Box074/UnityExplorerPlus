@@ -1,6 +1,6 @@
 {
     "modName": "UnityExplorerPlus",
-    "modVersion": "0.8.2.0",
+    "modVersion": "0.8.3.0",
     "codeDir": "./scripts",
     "csCompileInfo": true,
     "dependencies": [
@@ -29,11 +29,6 @@
                 "Newtonsoft.Json.dll"
             ],
             "copyToOutput": false
-        },
-        {
-            "name": "Satchel",
-            "url": "https://github.com/PrashantMohta/Satchel/releases/latest/download/Satchel.dll",
-            "copyToOutput": true
         },
         {
             "name": "HKTool",

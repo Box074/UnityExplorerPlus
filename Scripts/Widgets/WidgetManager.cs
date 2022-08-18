@@ -14,6 +14,7 @@ static class WidgetManager
         WidgetManager.RegisterType(typeof(tk2dSpriteAnimation), typeof(tk2dSpriteWidget));
         WidgetManager.RegisterType(typeof(tk2dSpriteAnimator), typeof(tk2dSpriteWidget));
         WidgetManager.RegisterType(typeof(tk2dSpriteAnimationClip), typeof(tk2dClipDumpWidget));
+        WidgetManager.RegisterType(typeof(PlayMakerFSM), typeof(FsmWidget));
     }
     public static void RegisterType(Type src, Type widget)
     {
@@ -22,7 +23,7 @@ static class WidgetManager
         var borrow = poolType.GetMethod("Borrow");
         typeMap[src] = borrow;
     }
-    private static void Init()
+    public static void Init()
     {
         On.UnityExplorer.UI.Widgets.UnityObjectWidget.GetUnityWidget += (orig, target, targetType, inspector) =>
         {
