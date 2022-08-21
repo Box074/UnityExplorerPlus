@@ -15,11 +15,9 @@ class FsmWidget : DumpWidgetBase<FsmWidget>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var uobj = (UnityEngine.Object)value;
-            UnityExplorerPlus.Instance.LogFine($"{uobj.name} (OBJ)");
             string name = uobj.name;
             string file = "";
             writer.WriteStartObject();
-            UnityExplorerPlus.Instance.LogFine($"{uobj.name} (WSO)");
             /*if(uobj is GameObject go)
             {
                 name = go.GetPath();
@@ -52,6 +50,10 @@ class FsmWidget : DumpWidgetBase<FsmWidget>
             writer.WriteValue(name);
             writer.WritePropertyName("objFile");
             writer.WriteValue(file);
+            writer.WritePropertyName("objId");
+            writer.WriteValue(uobj.GetInstanceID());
+            writer.WritePropertyName("objType");
+            writer.WriteValue(value.GetType().FullName);
             writer.WriteEndObject();
             UnityExplorerPlus.Instance.LogFine($"{name} ({file})");
             //writer.Flush();
@@ -65,7 +67,11 @@ class FsmWidget : DumpWidgetBase<FsmWidget>
             ExplorerCore.LogWarning("PlayMakerFSM is null, maybe it was destroyed?");
             return;
         }
-
+        
+        File.WriteAllText(savePath, GetFsmJson(fsm));
+    }
+    private string GetFsmJson(PlayMakerFSM fsm)
+    {
         var f = fsm.Fsm;
         foreach (var v in f.States)
         {
@@ -73,7 +79,7 @@ class FsmWidget : DumpWidgetBase<FsmWidget>
             v.SaveActions();
         }
         
-        File.WriteAllText(savePath, JsonConvert.SerializeObject(f, Formatting.Indented, new JsonSerializerSettings()
+        var token = JToken.Parse(JsonConvert.SerializeObject(f, Formatting.Indented, new JsonSerializerSettings()
         {
             ContractResolver = new UnityContractResolver(),
             Converters = new List<JsonConverter>()
@@ -82,12 +88,27 @@ class FsmWidget : DumpWidgetBase<FsmWidget>
             },
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         }));
+        token["goName"] = fsm.gameObject.name;
+        token["goPath"] = fsm.gameObject.GetPath();
+        token["fsmId"] = fsm.GetInstanceID();
+        return token.ToString(Formatting.Indented);
     }
-
     public override void OnReturnToPool()
     {
         base.OnReturnToPool();
         fsm = null;
+    }
+    public override GameObject CreateContent(GameObject uiRoot)
+    {
+        var result = base.CreateContent(uiRoot);
+        var btn = UIFactory.CreateButton(UIRoot, "OpenInFSMViewer", "Open", new Color?(new Color(0.2f, 0.3f, 0.2f)));
+        btn.Transform.SetSiblingIndex(0);
+        btn.Component.onClick.AddListener(() =>
+        {
+            FSMViewerManager.OpenJsonFsm(GetFsmJson(fsm));
+        });
+        UIFactory.SetLayoutElement(btn.Component.gameObject, 100, 25, null, null, null, null, null);
+        return result;
     }
     public override void OnBorrowed(object target, Type targetType, ReflectionInspector inspector)
     {

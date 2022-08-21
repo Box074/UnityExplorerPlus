@@ -1,13 +1,21 @@
 
 namespace UnityExplorerPlusMod;
 
-class UnityExplorerPlus : ModBase<UnityExplorerPlus>
+class UnityExplorerPlus : ModBaseWithSettings<UnityExplorerPlus, UnityExplorerPlus.Settings, object>, IGlobalSettings<UnityExplorerPlus.Settings>
 {
+    public class Settings
+    {
+        public string fsmViewerPath = "";
+        public int fsmViewerPort = 60023;
+    }
     public static AssetsInfo prefabMap = JsonConvert.DeserializeObject<AssetsInfo>(ModRes.PREFAB_INFO);
     public static Dictionary<int, MouseInspectorBase> inspectors = new();
     public override void Initialize()
     {
         Init().StartCoroutine();
+
+        _ = Executer.Instance;
+        Assembly.Load(ModRes.ASM_WSS);
     }
     public static void AddInspector(string name, MouseInspectorBase inspector)
     {

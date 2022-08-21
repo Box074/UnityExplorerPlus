@@ -1,8 +1,9 @@
 {
     "modName": "UnityExplorerPlus",
-    "modVersion": "0.8.3.0",
+    "modVersion": "0.9.1.0",
     "codeDir": "./scripts",
     "csCompileInfo": true,
+    "libraryDir": "./library",
     "dependencies": [
         {
             "name": "UExplorer",
@@ -45,6 +46,10 @@
             "UnityExplorerPlus.Prefabs.json": {
                 "name": "PREFAB_INFO",
                 "type": "utf8"
+            },
+            "websocket-sharp": {
+                "name": "ASM_WSS",
+                "type": "bytes"
             }
         }
     },
@@ -62,7 +67,8 @@
     },
     "enableNullableCheck": false,
     "resources": {
-        "./Res/prefabMap.json": "UnityExplorerPlus.Prefabs.json"
+        "./Res/prefabMap.json": "UnityExplorerPlus.Prefabs.json",
+        "./library/websocket-sharp.dll": "websocket-sharp"
     },
     "$schema": "https://github.com/HKLab/hkmod-utils/raw/master/schemca/modProject.json"
 }

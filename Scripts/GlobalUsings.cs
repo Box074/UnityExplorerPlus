@@ -46,8 +46,11 @@ global using HutongGames.PlayMaker;
 global using HutongGames.PlayMaker.Actions;
 
 global using Newtonsoft.Json;
+global using Newtonsoft.Json.Linq;
 global using Newtonsoft.Json.Serialization;
 
 global using SpriteUtils = HKTool.Utils.SpriteUtils;
 
-
+global using WebSocketSharp;
+global using WebSocketSharp.Net;
+global using WebSocketSharp.Server;
