@@ -47,7 +47,7 @@
                 "name": "PREFAB_INFO",
                 "type": "utf8"
             },
-            "websocket-sharp": {
+            "websocketsharp": {
                 "name": "ASM_WSS",
                 "type": "bytes"
             }
@@ -68,7 +68,7 @@
     "enableNullableCheck": false,
     "resources": {
         "./Res/prefabMap.json": "UnityExplorerPlus.Prefabs.json",
-        "./library/websocket-sharp.dll": "websocket-sharp"
+        "./library/websocket-sharp.dll": "websocketsharp"
     },
     "$schema": "https://github.com/HKLab/hkmod-utils/raw/master/schemca/modProject.json"
 }
