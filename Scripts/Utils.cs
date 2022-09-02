@@ -3,6 +3,17 @@ namespace UnityExplorerPlusMod;
 
 public static class Utils
 {
+    public static void NoThrow(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch(Exception e)
+        {
+            Modding.Logger.LogError(e);
+        }
+    }
     public static int CheckCount = 5;
     public static Texture2D ExtractTk2dSprite(tk2dSpriteCollectionData def, int id)
     {

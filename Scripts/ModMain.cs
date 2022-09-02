@@ -15,7 +15,6 @@ class UnityExplorerPlus : ModBaseWithSettings<UnityExplorerPlus, UnityExplorerPl
         Init().StartCoroutine();
 
         _ = Executer.Instance;
-        Assembly.Load(ModRes.ASM_WSS);
     }
     public static void AddInspector(string name, MouseInspectorBase inspector)
     {

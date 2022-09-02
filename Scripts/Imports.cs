@@ -13,6 +13,7 @@ global using Modding.Converters;
 global using UnityEngine;
 global using UnityEngine.U2D;
 global using UnityEngine.UI;
+global using UnityEngine.EventSystems;
 global using HKTool;
 global using HKTool.MAPI.Loader;
 global using HKTool.Utils;
