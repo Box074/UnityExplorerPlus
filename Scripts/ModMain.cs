@@ -8,7 +8,9 @@ class UnityExplorerPlus : ModBaseWithSettings<UnityExplorerPlus, UnityExplorerPl
         public string fsmViewerPath = "";
         public int fsmViewerPort = 60023;
     }
-    public static AssetsInfo prefabMap = JsonConvert.DeserializeObject<AssetsInfo>(ModRes.PREFAB_INFO);
+    public static AssetsInfo prefabMap = JsonConvert.DeserializeObject<AssetsInfo>(
+        Encoding.UTF8.GetString(ModResources.PREFABMAP)
+        )!;
     public static Dictionary<int, MouseInspectorBase> inspectors = new();
     public override void Initialize()
     {
@@ -47,8 +49,8 @@ class UnityExplorerPlus : ModBaseWithSettings<UnityExplorerPlus, UnityExplorerPl
 
     public void InitPanel()
     {
-        var uibase = UnityExplorer.UI.StaticUIManager.get_UiBase();
-        var UIPanels = UnityExplorer.UI.StaticUIManager.private_UIPanels();
+        var uibase = UUIManagerR.UiBase;
+        var UIPanels = UUIManagerR.UIPanels;
         var panels = new CustomPanel[]
         {
             new ModPanel(uibase)
@@ -56,7 +58,7 @@ class UnityExplorerPlus : ModBaseWithSettings<UnityExplorerPlus, UnityExplorerPl
         
         foreach (var v in panels)
         {
-            UIPanels.Add((UnityExplorer.UI.UIManager.Panels)v.PanelType, v);
+            UIPanels.Add(v.PanelType.Reflect(), v.Reflect());
             try
             {
                 UnityExplorer.UI.UIManager.SetPanelActive(v, false);
@@ -82,7 +84,8 @@ class UnityExplorerPlus : ModBaseWithSettings<UnityExplorerPlus, UnityExplorerPl
     }
     public void PatchOnDropdownSelect(On.UnityExplorer.Inspectors.MouseInspector.orig_OnDropdownSelect orig, int index)
     {
-        if (inspectors.TryGetValue(index, out var insp))
+
+        if (inspectors.TryGetValue(index, out var _))
         {
             InspectorPanel.Instance.MouseInspectDropdown.value = 0;
             MouseInspector.Instance.StartInspect((MouseInspectMode)index);

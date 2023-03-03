@@ -38,7 +38,7 @@ static class PatchGameObjectControls
                     .FirstOrDefault(x => x.gameObject.name == "DestroyBtn").gameObject;
                 var cp = showExplorerBtn.transform.parent;
                 var sceneLabel = cp.Find("SceneLabel").gameObject.GetComponent<Text>();
-                var sceneBtn = self.GameObjectInfo.private_SceneButton();
+                var sceneBtn = self.GameObjectInfo.Reflect().SceneButton;
                 var assetText = assetDict.TryGetOrAddValue(self, () =>
                 {
                     var text = UIFactory.CreateInputField(sceneBtn.GameObject.transform.parent.gameObject, "AssetsFileText", "Not recorded");

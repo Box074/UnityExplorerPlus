@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>UnityExplorerPlus</RootNamespace>
+    <AssemblyName>UnityExplorerPlus</AssemblyName>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyTitle>UnityExplorerPlus</AssemblyTitle>
+    <Product>UnityExplorerPlus</Product>
+    <Description>A Hollow Knight mod that...</Description>
+    <Copyright>Copyright © HKLab 2023</Copyright>
+    <Authors>HKLab</Authors>
+    <NoWarn>7035</NoWarn>
+    <AssemblyVersion>0.1.*</AssemblyVersion>
+    <Deterministic>false</Deterministic>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <HollowKnightRefs>..\API</HollowKnightRefs>
+    <ExportDir>bin\Publish</ExportDir>
+  </PropertyGroup>
+
+  <Target Name="CopyMod" AfterTargets="PostBuildEvent">
+    <RemoveDir Directories="$(ExportDir)/" />
+    <MakeDir Directories="$(ExportDir)/" />
+    <MakeDir Directories="$(ExportDir)/zip/" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ExportDir)/" />
+    <Copy SourceFiles="$(SolutionDir)/README.md;$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(ExportDir)/zip/" />
+    <ZipDirectory SourceDirectory="$(ExportDir)/zip/" DestinationFile="$(ExportDir)/$(TargetName).zip" />
+    <RemoveDir Directories="$(ExportDir)/zip/" />
+
+    <GetFileHash Files="$(ExportDir)/$(TargetName).zip" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="FilesWithHashes" />
+    </GetFileHash>
+    <WriteLinesToFile File="$(ExportDir)/SHA.txt" Lines="@(FilesWithHashes->'%(FileHash)')" Overwrite="true" Encoding="UTF-8" />
+
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <VersionNumber Include="@(Targets->'%(Version)')" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(ExportDir)/VERSION.txt" Lines="@(VersionNumber)" Overwrite="true" Encoding="UTF-8" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="6.6.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="HKBuildUtils" Version="0.5.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
+    <Reference Include="./library/*.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ModReference Include="Unity Explorer" AssemblyName="UnityExplorer.STANDALONE.Mono" />
+    <ModReference Include="Unity Explorer" AssemblyName="UniverseLib.Mono" />
+    <ModReference Include="Unity Explorer" AssemblyName="UExplorer" />
+    <ModReference Include="HKTool" AssemblyName="HKTool2" />
+
+    <MonoModHook Include="UnityExplorer.STANDALONE.Mono" />
+    <MonoModHook Include="UniverseLib.Mono" />
+
+    <ReflectHelper Include="UnityExplorer.STANDALONE.Mono" />
+    <ReflectHelper Include="UniverseLib.Mono" />
+    <ReflectHelper Include="PlayMaker" />
+    <ReflectHelper Include="UnityEngine.CoreModule" />
+    <ReflectHelper Include="Assembly-CSharp" />
+
+    <ModResource Include="Res/prefabMap.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Scripts\UI\" />
+  </ItemGroup>
+</Project>

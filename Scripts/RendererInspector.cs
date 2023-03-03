@@ -6,8 +6,8 @@ class RendererInspector : MouseInspectorBase
     public GameObject lastHit = null;
     public Renderer[] rendererCache = null;
     public float cacheTime = 0;
-    public static Text objNameLabel => MouseInspector.Instance.private_objNameLabel();
-    public static Text objPathLabel => MouseInspector.Instance.private_objPathLabel();
+    public static Text objNameLabel => MouseInspector.Instance.Reflect().objNameLabel;
+    public static Text objPathLabel => MouseInspector.Instance.Reflect().objPathLabel;
     public override void OnEndInspect()
     {
         cacheTime = 0;
@@ -32,7 +32,7 @@ class RendererInspector : MouseInspectorBase
     {
         if(go == null)
         {
-            MouseInspector.Instance.ClearHitData();
+            MouseInspector.Instance.Reflect().ClearHitData();
             return;
         }
         objNameLabel.text = "<b>Click to Inspect:</b> <color=cyan>" + go.name + "</color>";

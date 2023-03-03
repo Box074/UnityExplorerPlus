@@ -1,6 +1,6 @@
 {
     "modName": "UnityExplorerPlus",
-    "modVersion": "0.9.1.1",
+    "modVersion": "0.9.3.1",
     "codeDir": "./scripts",
     "csCompileInfo": true,
     "libraryDir": "./library",

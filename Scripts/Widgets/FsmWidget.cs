@@ -67,7 +67,7 @@ class FsmWidget : DumpWidgetBase<FsmWidget>
             ExplorerCore.LogWarning("PlayMakerFSM is null, maybe it was destroyed?");
             return;
         }
-        
+
         File.WriteAllText(savePath, GetFsmJson(fsm));
     }
     private string GetFsmJson(PlayMakerFSM fsm)
@@ -75,10 +75,11 @@ class FsmWidget : DumpWidgetBase<FsmWidget>
         var f = fsm.Fsm;
         foreach (var v in f.States)
         {
-            v.private_actionData() = v.ActionData ?? new();
+
+            v.Reflect().actionData = v.ActionData.Reflect() ?? new();
             v.SaveActions();
         }
-        
+
         var token = JToken.Parse(JsonConvert.SerializeObject(f, Formatting.Indented, new JsonSerializerSettings()
         {
             ContractResolver = new UnityContractResolver(),

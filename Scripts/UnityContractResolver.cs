@@ -34,6 +34,7 @@ public class UnityContractResolver : DefaultContractResolver
             UnityExplorerPlus.Instance.LogFine($"Change name: {prop.PropertyName} -> {nativeName}");
             prop.PropertyName = nativeName;
         }
+        
         return prop;
     }
 }

@@ -14,6 +14,15 @@ public static class Utils
             Modding.Logger.LogError(e);
         }
     }
+    public static void NextFrame(Action action)
+    {
+        IEnumerator Runner()
+        {
+            yield return null;
+            action();
+        }
+        Runner().StartCoroutine().Start();
+    }
     public static int CheckCount = 5;
     public static Texture2D ExtractTk2dSprite(tk2dSpriteCollectionData def, int id)
     {

@@ -3,8 +3,8 @@ namespace UnityExplorerPlusMod;
 
 class WorldPositionPin : MouseInspectorBase
 {
-    public static Text objNameLabel => MouseInspector.Instance.private_objNameLabel();
-    public static Text objPathLabel => MouseInspector.Instance.private_objPathLabel();
+    public static Text objNameLabel => MouseInspector.Instance.Reflect().objNameLabel;
+    public static Text objPathLabel => MouseInspector.Instance.Reflect().objPathLabel;
     public override void OnBeginMouseInspect()
     {
         

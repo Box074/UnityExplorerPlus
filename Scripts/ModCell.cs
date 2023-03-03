@@ -9,7 +9,7 @@ class ModCell : ICell
     public float DefaultHeight => 25;
     public ButtonRef nameButton;
     public Text nameText;
-    public IMod bindMod;
+    public (IMod, Type) bindMod;
     public void Enable()
     {
         Enabled = true;
@@ -22,16 +22,19 @@ class ModCell : ICell
     }
     public void OnClick()
     {
-        if(bindMod != null)
-        {
-            InspectorManager.Inspect(bindMod);
-        }
+        InspectorManager.Inspect(bindMod.Item1 ?? (object)bindMod.Item2);
     }
-    public void BindMod(IMod mod)
+    public void BindMod((IMod, Type) mod)
     {
-        if(mod == null) throw new ArgumentNullException(nameof(mod));
         bindMod = mod;
-        nameButton.ButtonText.text = $"<i><color=green>{mod.GetName()}</color><color=grey>({mod.GetType().FullName})</color></i>";
+        if (mod.Item1 != null)
+        {
+            nameButton.ButtonText.text = $"<i><color=green>{mod.Item1.GetName()}</color><color=grey>({mod.Item2.FullName})</color></i>";
+        }
+        else
+        {
+            nameButton.ButtonText.text = $"<i><color=red>Failed to load</color><color=red>({mod.Item2.FullName})</color></i>";
+        }
         nameButton.ButtonText.color = Color.white;
     }
     public GameObject CreateContent(GameObject root)

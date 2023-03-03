@@ -95,7 +95,7 @@ static class ReferenceSearch
         On.UnityExplorer.ObjectExplorer.ObjectSearch.ConstructUI += (orig, self, root) =>
         {
             orig(self, root);
-            var nameInputRow = self.private_nameInputRow();
+            var nameInputRow = self.Reflect().nameInputRow;
             int siblingId = nameInputRow.transform.GetSiblingIndex() + 1;
 
             refFilterRow = UIFactory.CreateHorizontalGroup(nameInputRow.transform.parent.gameObject, "RefFilterRow", false, true, true, true, 2, new Vector4(2, 2, 2, 2));

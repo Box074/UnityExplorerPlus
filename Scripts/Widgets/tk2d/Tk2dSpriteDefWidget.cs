@@ -18,7 +18,7 @@ class Tk2dSpriteDefWidget : Texture2DWidget
     private void SetImageSize(Texture2D prevTex)
     {
         RectTransform imageRect = InspectorPanel.Instance.Rect;
-        var imageLayout = this.private_imageLayout();
+        var imageLayout = this.Reflect().imageLayout;
 
         float rectWidth = imageRect.rect.width - 25;
         float rectHeight = imageRect.rect.height - 196;
@@ -52,7 +52,7 @@ class Tk2dSpriteDefWidget : Texture2DWidget
     {
         var ret = base.CreateContent(uiRoot);
 
-        var saveRow = UIFactory.CreateHorizontalGroup(this.private_textureViewerRoot(), "SpriteSaveRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
+        var saveRow = UIFactory.CreateHorizontalGroup(this.Reflect().textureViewerRoot, "SpriteSaveRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
         saveRow.transform.SetSiblingIndex(1);
         UIFactory.SetLayoutElement(saveRow, minHeight: 30, flexibleWidth: 9999);
 
@@ -83,7 +83,7 @@ class Tk2dSpriteDefWidget : Texture2DWidget
         };
 
         
-        var idRow = UIFactory.CreateHorizontalGroup(this.private_textureViewerRoot().transform.GetChild(0).gameObject,
+        var idRow = UIFactory.CreateHorizontalGroup(this.Reflect().textureViewerRoot.transform.GetChild(0).gameObject,
             "SpriteIDRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
         idRow.transform.SetAsFirstSibling();
         UIFactory.SetLayoutElement(idRow, minHeight: 30, flexibleWidth: 9999);
@@ -108,8 +108,8 @@ class Tk2dSpriteDefWidget : Texture2DWidget
             }
             var tex = Utils.ExtractTk2dSprite(collection, id);
             tex.name = collection.spriteDefinitions[id].name;
-            this.private_texture() = tex;
-            this.SetupTextureViewer();
+            this.Reflect().texture = tex;
+            this.Reflect().SetupTextureViewer();
             SetImageSize(tex);
         });
 

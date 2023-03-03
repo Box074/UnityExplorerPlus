@@ -12,8 +12,8 @@ class tk2dClipDumpWidget : Texture2DWidget
     public override GameObject CreateContent(GameObject uiRoot)
     {
         var ret = base.CreateContent(uiRoot);
-        this.private_savePathInput().Transform.parent.gameObject.SetActive(false);
-        GameObject playerRow = UIFactory.CreateHorizontalGroup(this.private_textureViewerRoot(), "PlayerWidget", false, false, true, true,
+        this.Reflect().savePathInput.Transform.parent.gameObject.SetActive(false);
+        GameObject playerRow = UIFactory.CreateHorizontalGroup(this.Reflect().textureViewerRoot, "PlayerWidget", false, false, true, true,
                 spacing: 5, padding: new() { x = 3f, w = 3f, y = 3f, z = 3f });
         playerRow.transform.SetAsFirstSibling();
 
@@ -26,7 +26,7 @@ class tk2dClipDumpWidget : Texture2DWidget
 
 
 
-        var saveRow = UIFactory.CreateHorizontalGroup(this.private_textureViewerRoot(), "SpriteSaveRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
+        var saveRow = UIFactory.CreateHorizontalGroup(this.Reflect().textureViewerRoot, "SpriteSaveRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
         saveRow.transform.SetSiblingIndex(1);
         UIFactory.SetLayoutElement(saveRow, minHeight: 30, flexibleWidth: 9999);
 
@@ -91,14 +91,14 @@ class tk2dClipDumpWidget : Texture2DWidget
     }
     private void SetTex(Texture2D tex)
     {
-        this.private_texture() = tex;
-        this.SetupTextureViewer();
+        this.Reflect().texture = tex;
+        this.Reflect().SetupTextureViewer();
         SetImageSize(tex);
     }
     private void SetImageSize(Texture2D prevTex)
     {
         RectTransform imageRect = InspectorPanel.Instance.Rect;
-        var imageLayout = this.private_imageLayout();
+        var imageLayout = this.Reflect().imageLayout;
 
         float rectWidth = imageRect.rect.width - 25;
         float rectHeight = imageRect.rect.height - 196;

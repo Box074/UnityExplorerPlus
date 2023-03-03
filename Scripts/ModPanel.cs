@@ -6,13 +6,8 @@ class ModPanel : CustomPanel, ICellPoolDataSource<ModCell>
     public override int MinHeight => 200;
     public override int MinWidth => 360;
     public override string Name => "Mods";
-    public List<IMod> modCache = new();
+    public List<(IMod, Type)> modCache = new();
     public ScrollPool<ModCell> scrollPool;
-    public static Type TModLoader = FindType("Modding.ModLoader")!;
-    public static MethodInfo FModInstances = (MethodInfo) FindMethodBase("Modding.ModLoader::get_ModInstances");
-    public static Type TModInstance = FindType("Modding.ModLoader+ModInstance")!;
-    public static Type TModInstanceSet = typeof(HashSet<>).MakeGenericType(TModInstance);
-    public static MethodInfo MGetEnumerator = TModInstanceSet.GetMethod("GetEnumerator");
     public ModPanel(UIBase owner) : base(owner) { }
     protected override void ConstructPanelContent()
     {
@@ -29,14 +24,7 @@ class ModPanel : CustomPanel, ICellPoolDataSource<ModCell>
         UIFactory.SetLayoutElement(content, null, 25, null, 9999, null, null, null);
         content.GetComponent<VerticalLayoutGroup>().childControlHeight = false;
         //scrollPool.Initialize(this);
-        modCache.Clear();
-        var mods = (IEnumerator)MGetEnumerator.FastInvoke(FModInstances.FastInvoke(null));
-        while (mods.MoveNext())
-        {
-            var mod = new ModInstance(mods.Current).Mod;
-            if (mod == null) continue;
-            modCache.Add(mod);
-        }
+        Refresh();
         scrollPool.Initialize(this);
         //typeof(ScrollPool<ModCell>).GetMethod("Initialize").Invoke(scrollPool, new object[] { this, null });
         Refresh();
@@ -58,13 +46,10 @@ class ModPanel : CustomPanel, ICellPoolDataSource<ModCell>
 
     public void Refresh()
     {
-        var mods = (IEnumerator)MGetEnumerator.FastInvoke(FModInstances.FastInvoke(null));
         modCache.Clear();
-        while (mods.MoveNext())
+        foreach(var mod in ModLoaderR.ModInstanceTypeMap)
         {
-            var mod = new ModInstance(mods.Current).Mod;
-            if (mod == null) continue;
-            modCache.Add(mod);
+            modCache.Add((mod.Value.Mod.ToOriginal(), mod.Key));
         }
         scrollPool.Refresh(true, true);
     }

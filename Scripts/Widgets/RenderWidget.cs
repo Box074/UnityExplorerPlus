@@ -14,13 +14,15 @@ class RendererWidget : Texture2DWidget
         renderer = (Renderer)target;
         var t = (UnityEngine.Object)target;
         ResetSize();
-        target = renderer.gameObject.Render(width, height);
+        target = renderer.gameObject.Render(width, height)!;
         base.OnBorrowed(target, typeof(Texture2D), inspector);
         unityObject = t;
-        this.private_nameInput().Text = this.unityObject.name;
-        this.private_instanceIdInput().Text = this.unityObject.GetInstanceID().ToString();
-        this.component = renderer;
-        this.private_gameObjectButton().Component.gameObject.SetActive(true);
+
+        var resb = ((UnityObjectWidget)this).Reflect();
+        resb.nameInput.Text = this.unityObject.name;
+        resb.instanceIdInput.Text = this.unityObject.GetInstanceID().ToString();
+        component = renderer;
+        resb.gameObjectButton.Component.gameObject.SetActive(true);
         refreshCor = RuntimeHelper.StartCoroutine(Refresh());
     }
     private void ResetSize()
@@ -32,16 +34,18 @@ class RendererWidget : Texture2DWidget
     {
         ResetSize();
         if (prevTex != null) UnityEngine.Object.Destroy(prevTex);
-        prevTex = renderer.gameObject.Render(width, height, false);
-        GetFieldRef<Texture2D, Texture2DWidget>(this, "texture") = prevTex;
-        this.SetupTextureViewer();
+        prevTex = null!;
+        if (width == 0 || height == 0 || width > 10000 || height > 10000) return;
+        prevTex = renderer.gameObject.Render(width, height, false)!;
+        this.Reflect().texture = prevTex;
+        this.Reflect().SetupTextureViewer();
         //FindMethodBase("UnityExplorer.UI.Widgets.Texture2DWidget::SetupTextureViewer").Invoke(this, new object[0]);
         SetImageSize();
     }
     private IEnumerator Refresh()
     {
         yield return null;
-        var root = GetFieldRef<GameObject, Texture2DWidget>(this, "textureViewerRoot");
+        var root = this.Reflect().textureViewerRoot;
         while (true)
         {
             while (!root.activeInHierarchy || !autoRefresh) yield return null;
@@ -52,7 +56,7 @@ class RendererWidget : Texture2DWidget
     private void SetImageSize()
     {
         RectTransform imageRect = InspectorPanel.Instance.Rect;
-        var imageLayout = this.private_imageLayout();
+        var imageLayout = this.Reflect().imageLayout;
 
         float rectWidth = imageRect.rect.width - 25;
         float rectHeight = imageRect.rect.height - 196;
@@ -99,7 +103,7 @@ class RendererWidget : Texture2DWidget
     public override GameObject CreateContent(GameObject uiRoot)
     {
         var ret = base.CreateContent(uiRoot);
-        var saveRow = GetFieldRef<GameObject, Texture2DWidget>(this, "textureViewerRoot").transform.GetChild(0).gameObject;
+        var saveRow = this.Reflect().textureViewerRoot.transform.GetChild(0).gameObject;
         var btn = UIFactory.CreateButton(saveRow, "RefreshBtn", "Refresh", new Color(0.2f, 0.25f, 0.2f));
         UIFactory.SetLayoutElement(btn.GameObject, minHeight: 25, minWidth: 100, flexibleWidth: 99999);
         btn.Transform.SetAsLastSibling();

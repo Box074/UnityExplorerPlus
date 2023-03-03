@@ -21,6 +21,9 @@ global using HKTool.Reflection;
 global using static HKTool.Utils.Compile.ReflectionHelperEx;
 global using HReflectionHelper = HKTool.Reflection.ReflectionHelper;
 
+global using UUIManager = UnityExplorer.UI.UIManager;
+global using UUIManagerR = UnityExplorer.UI.UIManagerR;
+
 global using UnityExplorer;
 global using UnityExplorer.ObjectExplorer;
 global using UnityExplorer.CacheObject;
