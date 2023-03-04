@@ -33,7 +33,7 @@ class ModCell : ICell
         }
         else
         {
-            nameButton.ButtonText.text = $"<i><color=red>Failed to load</color><color=red>({mod.Item2.FullName})</color></i>";
+            nameButton.ButtonText.text = $"<i><color=red>Failed to load</color><color=grey>({mod.Item2.FullName})</color></i>";
         }
         nameButton.ButtonText.color = Color.white;
     }

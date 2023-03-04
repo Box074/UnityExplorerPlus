@@ -18,7 +18,7 @@ jobs:
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
-        body_path: Info.txt
+        body_path: ./bin/Publish/ReleaseInfo.txt
         files: |
-          ./Output.zip
+          ./bin/Publish/Publish.zip
 
