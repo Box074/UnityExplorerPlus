@@ -38,8 +38,15 @@ class tk2dClipDumpWidget : Texture2DWidget
 
         ButtonRef saveBtn = UIFactory.CreateButton(saveRow, "SaveButton", "Save Folder", new Color(0.2f, 0.25f, 0.2f));
         UIFactory.SetLayoutElement(saveBtn.Component.gameObject, minHeight: 25, minWidth: 100, flexibleWidth: 0);
+
         saveBtn.OnClick += () =>
         {
+            void GODumpExtract(string path)
+            {
+                GODump.GODump.Settings.SpriteBorder = false;
+                GODump.Dump.DumpClip(clip, path)
+                    .StartCoroutine();
+            }
             var sp = savePlus.Text;
             if (string.IsNullOrEmpty(sp))
             {
@@ -47,12 +54,28 @@ class tk2dClipDumpWidget : Texture2DWidget
                 return;
             }
             Directory.CreateDirectory(sp);
+            if (UnityExplorerPlus.Instance.settings.useGODump.Value)
+            {
+                try
+                {
+                    GODumpExtract(sp);
+                    return;
+                }
+                catch (TypeLoadException)
+                {
+
+                }
+                catch (MissingMemberException)
+                {
+
+                }
+            }
             int i = 0;
             foreach (var v in clip.frames)
             {
                 var tex = Utils.ExtractTk2dSprite(v.spriteCollection, v.spriteId);
                 File.WriteAllBytes(Path.Combine(sp, clip.name + "-" + i.ToString() + ".png"), tex.EncodeToPNG());
-                UnityEngine.Object.Destroy(tex);
+                UnityEngine.Object.DestroyImmediate(tex);
                 i++;
             }
         };

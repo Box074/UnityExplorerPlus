@@ -16,10 +16,10 @@ static class FSMViewerManager
     }
     public static bool TryOpenFSMViewer(Action<FsmViewerService> cb)
     {
-        if (string.IsNullOrEmpty(UnityExplorerPlus.Instance.globalSettings.fsmViewerPath)) return false;
+        if (string.IsNullOrEmpty(UnityExplorerPlus.Instance.settings.fsmViewerPath.Value)) return false;
         if (server == null)
         {
-            server = new(UnityExplorerPlus.Instance.globalSettings.fsmViewerPort);
+            server = new(UnityExplorerPlus.Instance.settings.fsmViewerPort.Value);
             server.WebSocketServices.AddService<FsmViewerService>("/fsmviewer", _ => { });
             new Thread(() => server.Start()).Start();
         }
@@ -37,7 +37,7 @@ static class FSMViewerManager
         }
         try
         {
-            Process.Start(UnityExplorerPlus.Instance.globalSettings.fsmViewerPath, "--UEP " + UnityExplorerPlus.Instance.globalSettings.fsmViewerPort);
+            Process.Start(UnityExplorerPlus.Instance.settings.fsmViewerPath.Value, "--UEP " + UnityExplorerPlus.Instance.settings.fsmViewerPort.Value);
         }
         catch (Exception e)
         {

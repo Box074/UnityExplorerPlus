@@ -6,7 +6,7 @@
     <TargetFramework>net472</TargetFramework>
     <Authors>HKLab</Authors>
     <NoWarn>7035</NoWarn>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <Deterministic>false</Deterministic>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
@@ -18,7 +18,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="HKBuildUtils" Version="0.5.33">
+    <PackageReference Include="HKBuildUtils" Version="0.5.52">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -31,6 +31,7 @@
     <ModReference Include="Unity Explorer" AssemblyName="UniverseLib.Mono" />
     <ModReference Include="Unity Explorer" AssemblyName="UExplorer" />
     <ModReference Include="HKTool" AssemblyName="HKTool2" />
+    <ModReference Include="Game Object Dump" AssemblyName="GODump" />
 
     <MonoModHook Include="UnityExplorer.STANDALONE.Mono" />
     <MonoModHook Include="UniverseLib.Mono" />
@@ -42,6 +43,8 @@
     <ReflectHelper Include="Assembly-CSharp" />
 
     <ModResource Include="Res/prefabMap.json" />
+
+    <OutputFiles Include="websocket-sharp.dll" />
   </ItemGroup>
 
   <ItemGroup>

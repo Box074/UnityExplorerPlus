@@ -1,4 +1,7 @@
 
+using GODump;
+using HKTool.Utils;
+
 namespace UnityExplorerPlusMod;
 
 class tk2dSpriteWidget : DumpWidgetBase<tk2dSpriteWidget>
@@ -12,7 +15,32 @@ class tk2dSpriteWidget : DumpWidgetBase<tk2dSpriteWidget>
             return;
         }
         Directory.CreateDirectory(savePath);
-        foreach(var v in animation.clips)
+        void GODumpExtract(string path)
+        {
+            GODump.GODump.Settings.SpriteBorder = false;
+            CSC.GM.StartCoroutine(Dump.DumpSpriteInUExplorer(animation, path)
+                .SetIgnoreWait()
+                );
+
+        }
+
+        if (UnityExplorerPlus.Instance.settings.useGODump.Value)
+        {
+            try
+            {
+                GODumpExtract(savePath);
+                return;
+            }
+            catch (TypeLoadException)
+            {
+
+            }
+            catch (MissingMemberException)
+            {
+
+            }
+        }
+        foreach (var v in animation.clips)
         {
             var p = Path.Combine(savePath, v.name);
             Directory.CreateDirectory(p);
@@ -21,7 +49,7 @@ class tk2dSpriteWidget : DumpWidgetBase<tk2dSpriteWidget>
             {
                 var tex = Utils.ExtractTk2dSprite(f.spriteCollection, f.spriteId);
                 File.WriteAllBytes(Path.Combine(p, v.name + "-" + i.ToString() + ".png"), tex.EncodeToPNG());
-                UnityEngine.Object.Destroy(tex);
+                UnityEngine.Object.DestroyImmediate(tex);
                 i++;
             }
         }

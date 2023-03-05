@@ -1,4 +1,6 @@
 
+using HKGraphics;
+
 namespace UnityExplorerPlusMod;
 
 public static class Utils
@@ -24,6 +26,15 @@ public static class Utils
         Runner().StartCoroutine().Start();
     }
     public static int CheckCount = 5;
+    public static IEnumerator SetIgnoreWait(this IEnumerator coroutine)
+    {
+        var flat = new FlatEnumerator(coroutine);
+        while(flat.MoveNext())
+        {
+            if (flat.Current is WaitForSeconds || flat.Current is WaitForSecondsRealtime) continue;
+            yield return flat.Current;
+        }
+    }
     public static Texture2D ExtractTk2dSprite(tk2dSpriteCollectionData def, int id)
     {
         var count = CheckCount;
@@ -61,6 +72,26 @@ public static class Utils
                 UnityEngine.Object.DestroyImmediate(tex);
             }
         }
-        return maxTex;
+
+        var sdef = def.spriteDefinitions[id];
+
+        var trimedB = sdef.GetBounds();
+        var untrimedB = sdef.GetUntrimmedBounds();
+
+        var pixelPerUnitX = maxTex.width / trimedB.size.x;
+        var pixelPerUnitY = maxTex.height / trimedB.size.y;
+
+        var otex = Texture2D.redTexture.Clone(new((int)(untrimedB.size.x * pixelPerUnitX),
+           (int)(untrimedB.size.y * pixelPerUnitY)), TextureFormat.RGBA32);
+        //var otex = new Texture2D((int)(untrimedB.size.x * pixelPerUnitX),
+        //   (int)(untrimedB.size.y * pixelPerUnitY), TextureFormat.RGBA32, false);
+
+        var offsetX = (int)(Mathf.Abs(trimedB.min.x - untrimedB.min.x) * pixelPerUnitX);
+        var offsetY = (int)(Mathf.Abs(trimedB.min.y - untrimedB.min.y) * pixelPerUnitY);
+
+        maxTex.CopyTo(otex, new RectInt(0, 0, maxTex.width, maxTex.height),
+                            new RectInt(offsetX, offsetY, maxTex.width, maxTex.height));
+        UnityEngine.Object.DestroyImmediate(maxTex);
+        return otex;
     }
 }

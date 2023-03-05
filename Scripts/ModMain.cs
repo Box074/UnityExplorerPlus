@@ -1,12 +1,17 @@
 
+using UnityExplorer.Config;
+
 namespace UnityExplorerPlusMod;
 
-class UnityExplorerPlus : ModBaseWithSettings<UnityExplorerPlus, UnityExplorerPlus.Settings, object>, IGlobalSettings<UnityExplorerPlus.Settings>
+class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 {
+    public Settings settings = null!;
     public class Settings
     {
-        public string fsmViewerPath = "";
-        public int fsmViewerPort = 60023;
+        public ConfigElement<string> fsmViewerPath = new("Fsm Viewer Path", "", "", false);
+        public ConfigElement<int> fsmViewerPort = new("Fsm Viewer Port", "", 60023, false);
+        public ConfigElement<bool> useGODump = new("Use GODump", 
+            "Use GODump to dump tk2dSprite animations when GODump is available", false, false);
     }
     public static AssetsInfo prefabMap = JsonConvert.DeserializeObject<AssetsInfo>(
         Encoding.UTF8.GetString(ModResources.PREFABMAP)
@@ -32,7 +37,10 @@ class UnityExplorerPlus : ModBaseWithSettings<UnityExplorerPlus, UnityExplorerPl
     {
         PatchReflectionInspector.Init();
         ReferenceSearch.Init();
-        while (UnityExplorer.UI.UIManager.Initializing) yield return null;
+
+        On.UnityExplorer.Config.ConfigManager.CreateConfigElements += ConfigManager_CreateConfigElements;
+
+        while (UUIManager.Initializing) yield return null;
 
         InitPanel();
 
@@ -45,6 +53,12 @@ class UnityExplorerPlus : ModBaseWithSettings<UnityExplorerPlus, UnityExplorerPl
         FsmUtils.Init();
 
         PatchGameObjectControls.Init();
+    }
+
+    private void ConfigManager_CreateConfigElements(On.UnityExplorer.Config.ConfigManager.orig_CreateConfigElements orig)
+    {
+        orig();
+        settings = new();
     }
 
     public void InitPanel()
