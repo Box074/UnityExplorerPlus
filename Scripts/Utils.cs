@@ -37,8 +37,6 @@ public static class Utils
     }
     public static Texture2D ExtractTk2dSprite(tk2dSpriteCollectionData def, int id)
     {
-        var count = CheckCount;
-        if(count % 2 == 0) count++;
         Dictionary<string, (Texture2D, int)> text = new();
         for (int i = 0; i < CheckCount; i++)
         {

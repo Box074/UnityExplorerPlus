@@ -51,6 +51,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         HookEndpointManager.Add(typeof(MouseInspector).GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
         WidgetManager.Init();
         FsmUtils.Init();
+        ParseManager.Init();
 
         PatchGameObjectControls.Init();
     }

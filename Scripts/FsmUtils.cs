@@ -1,4 +1,6 @@
 
+using UniverseLib.Utility;
+
 namespace UnityExplorerPlusMod;
 
 static class FsmUtils
@@ -21,29 +23,21 @@ static class FsmUtils
                         + "</color><color=grey>)</color>";
                 }
             };
-        On.UniverseLib.Utility.ToStringUtility.ToStringWithType += (orig, value, fallbackType, includeNamespace) =>
-            {
-                if (value is FsmState state)
-                {
-                    return $"<color=grey>Fsm State: </color><color=green>{state.Name}</color>";
-                }
-                if (value is FsmTransition tran)
-                {
-                    return $"<color=grey>Fsm Transition: </color><color=green>{tran.FsmEvent?.Name ?? tran.EventName}</color><color=grey> -> </color><color=green>{tran.ToFsmState?.Name ?? tran.ToState}</color>";
-                }
-                if (value is FsmEvent ev)
-                {
-                    return $"<color=grey>Fsm Event: </color><color=green>{ev.Name}</color>";
-                }
-                if (value is NamedVariable v)
-                {
-                    return $"<color=grey>Fsm Variable(</color><color=green>{v.VariableType.ToString()}</color><color=grey>): </color><color=green>{v.Name}</color> | " + v.RawValue?.ToString();
-                }
-                return orig(value, fallbackType, includeNamespace);
-            };
-        
+
+        ParseManager.RegisterToString<FsmState>(
+            state => $"<color=grey>Fsm State: </color><color=green>{state.Name}</color>");
+
+        ParseManager.RegisterToString<FsmTransition>(
+            tran => $"<color=grey>Fsm Transition: </color><color=green>{tran.FsmEvent?.Name ?? tran.EventName}</color><color=grey> -> </color><color=green>{tran.ToFsmState?.Name ?? tran.ToState}</color>");
+
+        ParseManager.RegisterToString<FsmEvent>(
+            ev => $"<color=grey>Fsm Event: </color><color=green>{ev.Name}</color>");
+
+        ParseManager.RegisterToString<NamedVariable>(
+            v => $"<color=grey>Fsm Variable(</color><color=green>{v.VariableType}</color><color=grey>): </color><color=green>{v.Name}</color> | " + ToStringUtility.ToStringWithType(v.RawValue, typeof(object))
+            );
 
         ParseManager.Register(typeof(FsmEvent), (ev) => ((FsmEvent)ev).Name,
-            (name) => FsmEvent.GetFsmEvent(name));
+            FsmEvent.GetFsmEvent);
     }
 }
