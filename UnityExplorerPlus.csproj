@@ -48,6 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Scripts\UI\" />
+    <Folder Include="UI\" />
   </ItemGroup>
 </Project>
