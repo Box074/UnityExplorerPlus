@@ -49,7 +49,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 
         InitPanel();
 
-        //AddInspector("Renderer", new RendererInspector());
+        AddInspector("Collider2Ds", new Collider2DsInspector());
         AddInspector("Enemy", new EnemyInspector());
         AddInspector("World Position", new WorldPositionPin());
         AddInspector("Renderer", new RendererInspector());

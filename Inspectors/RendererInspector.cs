@@ -2,9 +2,12 @@ namespace UnityExplorerPlus.Inspectors;
 
 class RendererInspector : MouseInspectorBase
 {
+    public RendererInspectorResultPanel resultPanel = new();
     private List<GameObject> currentGameObjects = new List<GameObject>();
     public Renderer[] rendererCache = null;
     public float cacheTime = 0;
+
+
     public override void OnEndInspect()
     {
         cacheTime = 0;
@@ -18,10 +21,8 @@ class RendererInspector : MouseInspectorBase
     private IEnumerator SetPanelActiveCoro()
     {
         yield return null;
-        MouseInspectorResultsPanel panel = UUIManager.GetPanel<MouseInspectorResultsPanel>(
-            UUIManager.Panels.UIInspectorResults);
-        panel.SetActive(true);
-        panel.ShowResults();
+        resultPanel.SetActive(true);
+        resultPanel.ShowResults();
         yield break;
     }
     public override void ClearHitData()
@@ -30,8 +31,8 @@ class RendererInspector : MouseInspectorBase
     }
     public override void OnSelectMouseInspect()
     {
-        UiInspector.LastHitObjects.Clear();
-        UiInspector.LastHitObjects.AddRange(currentGameObjects);
+        resultPanel.Result.Clear();
+        resultPanel.Result.AddRange(currentGameObjects);
         RuntimeHelper.StartCoroutine(SetPanelActiveCoro());
     }
 

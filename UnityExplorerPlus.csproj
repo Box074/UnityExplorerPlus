@@ -6,7 +6,7 @@
     <TargetFramework>net472</TargetFramework>
     <Authors>HKLab</Authors>
     <NoWarn>7035</NoWarn>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <AssemblyVersion>2.2.0.0</AssemblyVersion>
     <Deterministic>false</Deterministic>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
@@ -24,6 +24,13 @@
     </PackageReference>
 
     <Reference Include="./library/*.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="UI\**" />
+    <EmbeddedResource Remove="UI\**" />
+    <None Remove="UI\**" />
+    <Reference Remove="UI\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,9 +52,5 @@
     <ModResource Include="Res/prefabMap.json" />
 
     <OutputFiles Include="websocket-sharp.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UI\" />
   </ItemGroup>
 </Project>

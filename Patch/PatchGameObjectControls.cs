@@ -53,8 +53,7 @@ static class PatchGameObjectControls
                 sceneBtn.GameObject.SetActive(true);
                 assetText.GameObject.SetActive(false);
                 sceneLabel.text = "Scene:";
-                GOCInfo info;
-                if (!dict.TryGetValue(self, out info)) info = null;
+                if (!dict.TryGetValue(self, out GOCInfo info)) info = null;
                 else info.showPrefabBtn.Component.gameObject.SetActive(false);
                 if (!go.scene.IsValid())
                 {
@@ -121,5 +120,6 @@ static class PatchGameObjectControls
                     }
                 }
             };
+
     }
 }
