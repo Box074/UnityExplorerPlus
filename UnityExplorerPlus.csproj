@@ -6,11 +6,12 @@
     <TargetFramework>net472</TargetFramework>
     <Authors>HKLab</Authors>
     <NoWarn>7035</NoWarn>
-    <AssemblyVersion>2.2.0.0</AssemblyVersion>
+    <AssemblyVersion>2.3.0.*</AssemblyVersion>
     <Deterministic>false</Deterministic>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
     <ModName>UnityExplorerPlus</ModName>
+    <UseWrapMethod>false</UseWrapMethod>
   </PropertyGroup>
 
   <ItemGroup>
