@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UniverseLib.UI.Widgets.ButtonList;
+﻿using UniverseLib.UI.Widgets.ButtonList;
 
 namespace UnityExplorerPlus.Inspectors
 {
@@ -140,8 +135,8 @@ namespace UnityExplorerPlus.Inspectors
 		public override void SetDefaultSizeAndPosition()
 		{
 			base.SetDefaultSizeAndPosition();
-			base.Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 500f);
-			base.Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 500f);
+            Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 500f);
+            Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 500f);
 		}
 
 		protected override void ConstructPanelContent()
@@ -149,7 +144,7 @@ namespace UnityExplorerPlus.Inspectors
 			dataHandler = new ButtonListHandler<GameObject, ButtonCell>(buttonScrollPool, 
 				new Func<List<GameObject>>(GetEntries), 
 				new Action<ButtonCell, int>(SetCell), new Func<GameObject, string, bool>(ShouldDisplayCell), new Action<int>(OnCellClicked));
-            buttonScrollPool = UIFactory.CreateScrollPool<ButtonCell>(base.ContentRoot, "ResultsList", out GameObject gameObject, out GameObject gameObject2, null);
+            buttonScrollPool = UIFactory.CreateScrollPool<ButtonCell>(ContentRoot, "ResultsList", out GameObject gameObject, out GameObject gameObject2, null);
             buttonScrollPool.Initialize(dataHandler, null);
 			GameObject gameObject3 = gameObject;
 			int? num = new int?(9999);
