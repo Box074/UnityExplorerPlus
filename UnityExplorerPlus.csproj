@@ -18,19 +18,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="HKBuildUtils" Version="0.5.52">
+    <PackageReference Include="HKBuildUtils" Version="0.5.56">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
     <Reference Include="./library/*.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="UI\**" />
-    <EmbeddedResource Remove="UI\**" />
-    <None Remove="UI\**" />
-    <Reference Remove="UI\**" />
   </ItemGroup>
 
   <ItemGroup>

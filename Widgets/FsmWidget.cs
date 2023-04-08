@@ -1,5 +1,5 @@
 using UnityExplorerPlus.FSMViewer;
-
+using UnityExplorerPlus.Patch;
 
 namespace UnityExplorerPlus.Widgets;
 
@@ -20,7 +20,7 @@ class FsmWidget : DumpWidgetBase<FsmWidget>
             string name = uobj.name;
             string file = "";
             writer.WriteStartObject();
-            /*if(uobj is GameObject go)
+            if(uobj is GameObject go)
             {
                 name = go.GetPath();
                 UnityExplorerPlus.Instance.LogFine($"{name} (GO)");
@@ -47,7 +47,7 @@ class FsmWidget : DumpWidgetBase<FsmWidget>
                 {
                     file = PatchGameObjectControls.GetPrefabFile(go);
                 }
-            }*/
+            }
             writer.WritePropertyName("objName");
             writer.WriteValue(name);
             writer.WritePropertyName("objFile");
