@@ -6,7 +6,7 @@
     <TargetFramework>net472</TargetFramework>
     <Authors>HKLab</Authors>
     <NoWarn>7035</NoWarn>
-    <AssemblyVersion>2.3.0.*</AssemblyVersion>
+    <AssemblyVersion>2.4.0.*</AssemblyVersion>
     <Deterministic>false</Deterministic>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
@@ -36,6 +36,7 @@
 
     <MonoModHook Include="UnityExplorer.STANDALONE.Mono" />
     <MonoModHook Include="UniverseLib.Mono" />
+    <MonoModHook Include="UnityEngine.CoreModule" />
 
     <ReflectHelper Include="UnityExplorer.STANDALONE.Mono" />
     <ReflectHelper Include="UniverseLib.Mono" />

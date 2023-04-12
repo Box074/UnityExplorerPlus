@@ -45,7 +45,7 @@ class SpriteWidget : Texture2DWidget
                 atlasButton.Component.gameObject.SetActive(true);
             }
         }
-        viewTex = SpriteUtils.ExtractSprite(sr);
+        viewTex = SpriteUtils.ExtractSprite(sr, true);
         viewTex.name = sr.name;
         base.OnBorrowed(viewTex, targetType, inspector);
 

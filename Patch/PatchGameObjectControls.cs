@@ -102,6 +102,7 @@ static class PatchGameObjectControls
             text.Component.textComponent.color = new Color(0.7f, 0.7f, 0.7f);
             text.Transform.SetSiblingIndex(sceneBtn.Transform.GetSiblingIndex());
             assetText = text;
+            assetDict.Add(self, assetText);
         }
 
 

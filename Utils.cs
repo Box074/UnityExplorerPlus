@@ -37,7 +37,7 @@ public static class Utils
         Dictionary<string, (Texture2D, int)> text = new();
         for (int i = 0; i < CheckCount; i++)
         {
-            var tex = SpriteUtils.ExtractTk2dSprite(def, id);
+            var tex = SpriteUtils.ExtractTk2dSprite(def, id, false);
             using (var md5 = System.Security.Cryptography.MD5.Create())
             {
                 var m5 = BitConverter.ToString(md5.ComputeHash(tex.EncodeToPNG()));
@@ -78,8 +78,6 @@ public static class Utils
 
         var otex = Texture2D.redTexture.Clone(new((int)(untrimedB.size.x * pixelPerUnitX),
            (int)(untrimedB.size.y * pixelPerUnitY)), TextureFormat.RGBA32);
-        //var otex = new Texture2D((int)(untrimedB.size.x * pixelPerUnitX),
-        //   (int)(untrimedB.size.y * pixelPerUnitY), TextureFormat.RGBA32, false);
 
         var offsetX = (int)(Mathf.Abs(trimedB.min.x - untrimedB.min.x) * pixelPerUnitX);
         var offsetY = (int)(Mathf.Abs(trimedB.min.y - untrimedB.min.y) * pixelPerUnitY);

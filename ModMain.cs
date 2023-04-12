@@ -1,12 +1,15 @@
 
+using HKTool.Attributes;
 using UnityExplorer.Config;
 using UnityExplorerPlus.FSMViewer;
 using UnityExplorerPlus.Inspectors;
 using UnityExplorerPlus.ParseUtility;
 using UnityExplorerPlus.Patch;
+using UnityExplorerPlus.STW;
 using UnityExplorerPlus.Widgets;
 
 namespace UnityExplorerPlus;
+
 
 class UnityExplorerPlus : ModBase<UnityExplorerPlus>
 {
@@ -37,11 +40,13 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
     public override void OnCheckDependencies()
     {
         CheckAssembly("UnityExplorer.Standalone.Mono", new Version(4, 8, 2));
+        CheckAssembly("HKTool2", new Version(2, 2));
     }
     private IEnumerator Init()
     {
         PatchReflectionInspector.Init();
         ReferenceSearch.Init();
+        STWNavbarButton.Init();
 
         On.UnityExplorer.Config.ConfigManager.CreateConfigElements += ConfigManager_CreateConfigElements;
 
@@ -54,11 +59,12 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         AddInspector("World Position", new WorldPositionPin());
         AddInspector("Renderer", new RendererInspector());
         On.UnityExplorer.Inspectors.MouseInspector.OnDropdownSelect += PatchOnDropdownSelect;
+        On.UnityExplorer.Inspectors.MouseInspector.get_CurrentInspector += Patch_get_CurrentInspector;
 
-        HookEndpointManager.Add(typeof(MouseInspector).GetMethod("get_CurrentInspector"), Patch_get_CurrentInspector);
         WidgetManager.Init();
         FsmUtils.Init();
         ParseManager.Init();
+        STWCore.Init();
 
         PatchGameObjectControls.Init();
     }
@@ -92,8 +98,8 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         }
     }
 
-    public MouseInspectorBase Patch_get_CurrentInspector(Func<object, MouseInspectorBase> orig,
-        object self)
+    public MouseInspectorBase Patch_get_CurrentInspector(On.UnityExplorer.Inspectors.MouseInspector.orig_get_CurrentInspector orig, 
+        MouseInspector self)
     {
         if (inspectors.TryGetValue((int)MouseInspector.Mode, out var insp))
         {

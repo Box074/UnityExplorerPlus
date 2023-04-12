@@ -17,7 +17,7 @@ class SpriteAtlasWidget : DumpWidgetBase<SpriteAtlasWidget>
         foreach (var v in sr)
         {
             var p = Path.Combine(savePath, v.name.Replace("(Clone)", "") + ".png");
-            var tex = SpriteUtils.ExtractSprite(v);
+            var tex = SpriteUtils.ExtractSprite(v, true);
             File.WriteAllBytes(p, tex.EncodeToPNG());
             UnityEngine.Object.DestroyImmediate(tex);
             UnityEngine.Object.DestroyImmediate(v);
