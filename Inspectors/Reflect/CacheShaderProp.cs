@@ -84,12 +84,25 @@ namespace UnityExplorerPlus.Inspectors.Reflect
             var mat = (Material)DeclaringInstance;
             var shader = mat.shader;
             if (shader == null) return null;
-            var type = shader.GetPropertyType(shader.FindPropertyIndex(m_Name));
+            var pid = shader.FindPropertyIndex(m_Name);
+            var type = shader.GetPropertyType(pid);
             FallbackType = shaderPropType[type];
-            return shaderPropGetter[type].Invoke(mat, new object[]
+            var result = shaderPropGetter[type].Invoke(mat, new object[]
             {
                 m_Index
             });
+            if(result == null && type == ShaderPropertyType.Texture)
+            {
+                result = shader.GetPropertyTextureDefaultName(pid) switch
+                {
+                    "white" => Texture2D.whiteTexture,
+                    "red" => Texture2D.redTexture,
+                    "black" => Texture2D.blackTexture,
+                    "gray" => Texture2D.grayTexture,
+                    _ => null
+                };
+            }
+            return result;
         }
 
         protected override void TrySetValue(object value)

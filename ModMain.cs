@@ -20,6 +20,8 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         public ConfigElement<int> fsmViewerPort = new("Fsm Viewer Port", "", 60023, false);
         public ConfigElement<bool> useGODump = new("Use GODump",
             "Use GODump to dump tk2dSprite animations when GODump is available", false, false);
+        public ConfigElement<bool> enableRendererBox = new("Show triangles",
+            "Show triangles when doing RendererInspector", false);
     }
     public static AssetsInfo prefabMap = JsonConvert.DeserializeObject<AssetsInfo>(
         Encoding.UTF8.GetString(ModResources.PREFABMAP)

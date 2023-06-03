@@ -1,15 +1,24 @@
+using UnityExplorerPlus.LineDrawing;
+
 namespace UnityExplorerPlus.Inspectors;
 
-class RendererInspector : MouseInspectorBase
+class RendererInspector : MouseInspectorBase, ILineProvider
 {
+    public RendererInspector()
+    {
+        LineRenderer2.Instance.providers.Add(this);
+    }
+
     public RendererInspectorResultPanel resultPanel = new();
     private List<GameObject> currentGameObjects = new List<GameObject>();
     public Renderer[] rendererCache = null;
     public float cacheTime = 0;
 
+    public List<LineData> Lines { get; } = new();
 
     public override void OnEndInspect()
     {
+        Lines.Clear();
         cacheTime = 0;
         rendererCache = null;
     }
@@ -47,6 +56,18 @@ class RendererInspector : MouseInspectorBase
         var d3 = signOfBC * signOfTrig > 0;
         return d1 && d2 && d3;
     }
+    private Vector2 LocalToScreenPoint(Vector3 point)
+    {
+        Vector2 result = CameraSwitcher.GetCurrentCamera().WorldToScreenPoint(point);
+        return new Vector2((int)Math.Round(result.x), (int)Math.Round(Screen.height - result.y));
+    }
+    private void AddLine(Vector2 a, Vector2 b, float z)
+    {
+        if (!UnityExplorerPlus.Instance.settings.enableRendererBox.Value) return;
+        var c = Mathf.RoundToInt((z * 50) % 255) / 255f;
+        var color = new Color(1, c, c, 1);
+        Lines.Add(new(LocalToScreenPoint(a), LocalToScreenPoint(b), color, Mathf.RoundToInt(z * 100)));
+    }
     public override void UpdateMouseInspect(Vector2 _)
     {
         if (Time.unscaledTime - cacheTime > 0.5f || rendererCache is null)
@@ -60,6 +81,7 @@ class RendererInspector : MouseInspectorBase
             return;
         }
         currentGameObjects.Clear();
+        Lines.Clear();
 
         var p = CameraSwitcher.GetCurrentMousePosition();
 
@@ -71,7 +93,9 @@ class RendererInspector : MouseInspectorBase
             .OrderBy(x => x.transform.position.z))
         {
             Vector2 pos = v.transform.position;
+            Vector3 pos3 = v.transform.position;
             var scale = new Vector3(v.transform.GetScaleX(), v.transform.GetScaleY(), 1);
+            var vert = new List<(Vector3, Vector3, Vector3)>();
             if (v is MeshRenderer mr)
             {
                 var filter = v.GetComponent<MeshFilter>();
@@ -79,6 +103,8 @@ class RendererInspector : MouseInspectorBase
                 var mesh = filter.sharedMesh;
                 if (mesh == null) continue;
                 var points = mesh.vertices;
+                vert.Clear();
+                bool isTouch = false;
 
                 for (int i = 0; i < mesh.subMeshCount; i++)
                 {
@@ -88,12 +114,21 @@ class RendererInspector : MouseInspectorBase
                         var a = points[trig[i]].MultiplyElements(scale) + (Vector3)pos;
                         var b = points[trig[i + 1]].MultiplyElements(scale) + (Vector3)pos;
                         var c = points[trig[i + 2]].MultiplyElements(scale) + (Vector3)pos;
-
-                        if (TestPointInTrig(a, b, c, p))
+                        vert.Add((a, b, c));
+                        if (!isTouch && TestPointInTrig(a, b, c, p))
                         {
                             currentGameObjects.Add(v.gameObject);
-                            break;
+                            isTouch = true;
                         }
+                    }
+                }
+                if(isTouch)
+                {
+                    foreach (var (a, b, c) in vert)
+                    {
+                        AddLine(a, b, pos3.z);
+                        AddLine(b, c, pos3.z);
+                        AddLine(a, c, pos3.z);
                     }
                 }
             }
@@ -102,16 +137,27 @@ class RendererInspector : MouseInspectorBase
                 if (sprite.sprite == null) continue;
                 var points = sprite.sprite.vertices;
                 var trig = sprite.sprite.triangles;
+                vert.Clear();
+                bool isTouch = false;
                 for (int i = 0; i < trig.Length; i += 3)
                 {
                     var a = points[trig[i]].MultiplyElements(scale) + pos;
                     var b = points[trig[i + 1]].MultiplyElements(scale) + pos;
                     var c = points[trig[i + 2]].MultiplyElements(scale) + pos;
-
-                    if (TestPointInTrig(a, b, c, p))
+                    vert.Add((a, b, c));
+                    if (!isTouch && TestPointInTrig(a, b, c, p))
                     {
                         currentGameObjects.Add(v.gameObject);
-                        break;
+                        isTouch = true;
+                    }
+                }
+                if (isTouch)
+                {
+                    foreach (var (a, b, c) in vert)
+                    {
+                        AddLine(a, b, pos3.z);
+                        AddLine(b, c, pos3.z);
+                        AddLine(a, c, pos3.z);
                     }
                 }
             }
