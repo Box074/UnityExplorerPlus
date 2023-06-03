@@ -29,15 +29,14 @@ class EnemyInspector : MouseInspectorBase
     }
     public override void UpdateMouseInspect(Vector2 _)
     {
-        var cam = Camera.main;
+        var cam = CameraSwitcher.GetCurrentCamera();
         if (cam == null)
         {
             MouseInspector.Instance.StopInspect();
             return;
         }
-        var mousePos = Input.mousePosition;
-        mousePos.z = cam.WorldToScreenPoint(Vector3.zero).z;
-        var worldPos = cam.ScreenToWorldPoint(mousePos);
+
+        var worldPos = CameraSwitcher.GetCurrentMousePosition();
         var hit = Physics2D.OverlapPointAll(worldPos, Physics2D.AllLayers)
             .Where(x => x.GetComponent<HealthManager>() is not null)
             .FirstOrDefault();

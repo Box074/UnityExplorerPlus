@@ -30,7 +30,7 @@
 
         public override void UpdateMouseInspect(Vector2 _)
         {
-            var cam = Camera.main;
+            var cam = CameraSwitcher.GetCurrentCamera();
             if (cam == null)
             {
                 MouseInspector.Instance.StopInspect();
@@ -38,16 +38,13 @@
             }
             currentGameObjects.Clear();
 
-            var mousePos = Input.mousePosition;
-            mousePos.z = cam.WorldToScreenPoint(Vector3.zero).z;
-            var p = cam.ScreenToWorldPoint(mousePos);
+            var p = CameraSwitcher.GetCurrentMousePosition();
 
             currentGameObjects.AddRange(Physics2D.OverlapPointAll(p, -1).Select(x => x.gameObject));
 
             if (currentGameObjects.Count > 0)
             {
-                MouseInspectorR.Instance.objNameLabel.text = $"Click to view collider2Ds under mouse{(Vector2)p}: {currentGameObjects.Count}\n" +
-                        string.Join("\n", currentGameObjects.Take(4).Select(x => x.name).ToArray());
+                MouseInspectorR.Instance.objNameLabel.text = $"Click to view collider2Ds under mouse{(Vector2)p}: {currentGameObjects.Count}";
             }
             else
             {

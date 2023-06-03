@@ -18,17 +18,15 @@ class WorldPositionPin : MouseInspectorBase
     }
     public override void UpdateMouseInspect(Vector2 _)
     {
-        var pos = Input.mousePosition;
-        pos.z = Camera.main.WorldToScreenPoint(Vector3.zero).z;
-        pos = Camera.main.ScreenToWorldPoint(pos);
-        objNameLabel.text = "<b>World Position: </b><color=cyan>" + ((Vector2)pos).ToString() + "</color>";
+        objNameLabel.text = "<b>World Position: </b><color=cyan>" + 
+            CameraSwitcher.GetCurrentMousePosition() + "</color>";
         objPathLabel.text = "";
     }
     public override void OnSelectMouseInspect()
     {
         var pos = Input.mousePosition;
-        pos.z = Camera.main.WorldToScreenPoint(Vector3.zero).z;
-        pos = Camera.main.ScreenToWorldPoint(pos);
+        pos.z = CameraSwitcher.GetCurrentCamera().WorldToScreenPoint(Vector3.zero).z;
+        pos = CameraSwitcher.GetCurrentCamera().ScreenToWorldPoint(pos);
         ClipboardPanel.Copy((Vector2)pos);
         UUIManager.SetPanelActive(UUIManager.Panels.Clipboard, true);
     }

@@ -47,6 +47,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         PatchReflectionInspector.Init();
         ReferenceSearch.Init();
         STWNavbarButton.Init();
+        CameraSwitcher.Init();
 
         On.UnityExplorer.Config.ConfigManager.CreateConfigElements += ConfigManager_CreateConfigElements;
 
@@ -110,7 +111,8 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
             return orig(self);
         }
     }
-    public void PatchOnDropdownSelect(On.UnityExplorer.Inspectors.MouseInspector.orig_OnDropdownSelect orig, int index)
+    public void PatchOnDropdownSelect(On.UnityExplorer.Inspectors.MouseInspector.orig_OnDropdownSelect orig, 
+        int index)
     {
 
         if (inspectors.TryGetValue(index, out var _))
