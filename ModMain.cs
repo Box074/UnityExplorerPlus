@@ -46,6 +46,9 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
     }
     private IEnumerator Init()
     {
+
+
+        FreeCamPatcher.Init();
         PatchReflectionInspector.Init();
         ReferenceSearch.Init();
         STWNavbarButton.Init();
@@ -101,7 +104,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
         }
     }
 
-    public MouseInspectorBase Patch_get_CurrentInspector(On.UnityExplorer.Inspectors.MouseInspector.orig_get_CurrentInspector orig, 
+    public MouseInspectorBase Patch_get_CurrentInspector(On.UnityExplorer.Inspectors.MouseInspector.orig_get_CurrentInspector orig,
         MouseInspector self)
     {
         if (inspectors.TryGetValue((int)MouseInspector.Mode, out var insp))
@@ -113,7 +116,7 @@ class UnityExplorerPlus : ModBase<UnityExplorerPlus>
             return orig(self);
         }
     }
-    public void PatchOnDropdownSelect(On.UnityExplorer.Inspectors.MouseInspector.orig_OnDropdownSelect orig, 
+    public void PatchOnDropdownSelect(On.UnityExplorer.Inspectors.MouseInspector.orig_OnDropdownSelect orig,
         int index)
     {
 

@@ -6,7 +6,7 @@
     <TargetFramework>net472</TargetFramework>
     <Authors>HKLab</Authors>
     <NoWarn>7035</NoWarn>
-    <AssemblyVersion>2.5.0.*</AssemblyVersion>
+    <AssemblyVersion>2.6.0.*</AssemblyVersion>
     <Deterministic>false</Deterministic>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
