@@ -1,5 +1,5 @@
 ﻿# UnityExplorerPlus
-# Transfer to [HKUE](https://github.com/Box074/HollowKnight.UnityExplorer)
+# Transfer to https://github.com/Box074/HollowKnight.UnityExplorer
 
 A mod that adds functionality to [Unity Explorer](https://github.com/sinai-dev/UnityExplorer)
 
